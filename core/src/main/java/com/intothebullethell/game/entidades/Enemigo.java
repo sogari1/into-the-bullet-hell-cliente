@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.intothebullethell.game.managers.MapManager;
+import com.intothebullethell.game.managers.EntidadManager;
 import com.intothebullethell.game.managers.ProyectilManager;
 public abstract class Enemigo extends Entidad {
     protected float intervaloAtaque;
@@ -14,9 +14,9 @@ public abstract class Enemigo extends Entidad {
     protected float projectilVelocidad;
     protected int daño;
     protected ProyectilManager proyectilManager;
-    protected MapManager mapManager; 
+    protected EntidadManager entidadManager; 
 
-    public Enemigo(Texture texture, int vida, int velocidad, float intervaloAtaque, int daño, float projectilVelocidad, Texture projectilTextura, Jugador[] jugadores, List<Enemigo> enemigos,  MapManager mapManager) {
+    public Enemigo(Texture texture, int vida, int velocidad, float intervaloAtaque, int daño, float projectilVelocidad, Texture projectilTextura, Jugador[] jugadores, List<Enemigo> enemigos, EntidadManager entidadManager) {
         super(texture, vida, velocidad, projectilTextura);
         this.jugadores = jugadores;
         this.enemigos = enemigos;
@@ -24,7 +24,7 @@ public abstract class Enemigo extends Entidad {
         this.tiempoAtaque = intervaloAtaque;
         this.daño = daño;
         this.projectilVelocidad = projectilVelocidad;
-        this.mapManager = mapManager; 
+        this.entidadManager = entidadManager; 
     }
 
     @Override

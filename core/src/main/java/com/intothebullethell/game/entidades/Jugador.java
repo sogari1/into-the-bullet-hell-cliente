@@ -1,7 +1,6 @@
 package com.intothebullethell.game.entidades;
 
 
-import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,33 +9,37 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.intothebullethell.game.globales.GameData;
+import com.intothebullethell.game.globales.NetworkData;
 import com.intothebullethell.game.inputs.InputManager;
-import com.intothebullethell.game.managers.MapManager;
+import com.intothebullethell.game.managers.EntidadManager;
 import com.intothebullethell.game.managers.ProyectilManager;
 import com.intothebullethell.game.mecanicas.ArmaAleatoria;
 import com.intothebullethell.game.objects.armas.Arma;
 import com.intothebullethell.game.ui.Hud;
 
 public class Jugador extends Entidad {
+	public OrthographicCamera camara;
     private Vector2 mousePosition = new Vector2();
     private Arma armaEquipada;
     private ArmaAleatoria armaAleatoria = new ArmaAleatoria();
-    public OrthographicCamera camara;
     private TextureRegion upSprite, downSprite, leftSprite, rightSprite;
     private Hud hud;
     private InputManager inputManager;
-    private ProyectilManager proyectilManager;
-    private MapManager mapManager;
+    private EntidadManager entidadManager;
     
     private float shootTimer = 0;
     private float opacidad = 1.0f;
     private float escudoCoolDown = 0;
     private final float escudoCoolDownMaximo = 2.5f; 
     private int vidaActual;
+    private int id; 
+    
     private boolean disparando = false;
 
-    public Jugador(TextureRegion sprite, TextureRegion upSprite, TextureRegion downSprite, TextureRegion leftSprite, TextureRegion rightSprite, OrthographicCamera camara, InputManager inputManager, MapManager mapManager, ProyectilManager proyectilManager) {
+    public Jugador(int id, TextureRegion sprite, TextureRegion upSprite, TextureRegion downSprite, TextureRegion leftSprite, TextureRegion rightSprite, OrthographicCamera camara, InputManager inputManager, EntidadManager entidadManager, ProyectilManager proyectilManager) {
     	super(sprite.getTexture(), 20, 100, null);
+    	this.id = id;
         this.upSprite = upSprite;
         this.downSprite = downSprite;
         this.leftSprite = leftSprite;
@@ -46,21 +49,21 @@ public class Jugador extends Entidad {
         this.armaEquipada = armaAleatoria.obtenerArmaAleatoria();
         this.inputManager = inputManager;
         this.inputManager.setJugador(this);
-        this.mapManager = mapManager;
-        this.proyectilManager = proyectilManager;
+        this.entidadManager = entidadManager;
     }
 
     @Override
     public void draw(Batch batch) {
-        update(Gdx.graphics.getDeltaTime());
+    	update(Gdx.graphics.getDeltaTime());
         super.draw(batch); 
-        proyectilManager.draw();
+        entidadManager.grupoProyectiles.draw();
 
     }
 
     @Override
     public void update(float delta) {
-    	Jugador[] jugadores = new Jugador[]{this};
+//    	Jugador[] jugadores = new Jugador[]{this};
+    	 if (GameData.clienteNumero == this.getId()) { 
     	 if (escudoCoolDown > 0) {
     		 escudoCoolDown -= delta; 
     		 opacidad = 0.5f;
@@ -69,11 +72,12 @@ public class Jugador extends Entidad {
              opacidad = 1.0f; 
     	 }
     	 setColor(1.0f, 1.0f, 1.0f, opacidad); 
-    	 actualizarMovimiento();
-         manejarDisparos(delta);
+//    	 actualizarMovimiento();
+//         manejarDisparos(delta);
          actualizarSprite();
          actualizarCamara();
-         proyectilManager.actualizarProyectiles(delta, mapManager.getgrupoEnemigos().getEntidades(), jugadores);
+//         entidadManager.grupoProyectiles.actualizarProyectiles(delta, entidadManager.getgrupoEnemigos().getEntidades(), jugadores);
+    	 }
     }
 
     private void actualizarMovimiento() {
@@ -82,28 +86,22 @@ public class Jugador extends Entidad {
     
     public void moverArriba() {
         velocity.y = velocidad;
-        actualizarMovimiento();
     }
-
     public void moverAbajo() {
         velocity.y = -velocidad;
-        actualizarMovimiento();
     }
-
     public void moverIzquierda() {
         velocity.x = -velocidad;
-        actualizarMovimiento();
     }
-
     public void moverDerecha() {
         velocity.x = velocidad;
-        actualizarMovimiento();
     }
+    
     private void manejarDisparos(float delta) {
-        if (disparando) {
+        if (isDisparando()) {
             shootTimer -= delta;
             if (shootTimer <= 0) {
-            	proyectilManager.dispararProyectil(camara, armaEquipada, getX() + getWidth() / 2, getY() + getHeight() / 2, Gdx.input.getX(), Gdx.input.getY());
+            	entidadManager.grupoProyectiles.dispararProyectil(camara, armaEquipada, getX() + getWidth() / 2, getY() + getHeight() / 2, Gdx.input.getX(), Gdx.input.getY());
                 shootTimer = armaEquipada.getRatioFuego(); 
             }
         }
@@ -120,16 +118,24 @@ public class Jugador extends Entidad {
         Vector2 direction = mouseWorldPos.sub(jugadorCentro).nor();
         float angulo = direction.angleDeg();
 
+        String direccion;
+
         if (angulo >= 45 && angulo < 135) {
             setRegion(upSprite);  // Arriba
+            direccion = "arriba";
         } else if (angulo >= 135 && angulo < 225) {
             setRegion(leftSprite);  // Izquierda
+            direccion = "izquierda";
         } else if (angulo >= 225 && angulo < 315) {
             setRegion(downSprite);  // Abajo
+            direccion = "abajo";
         } else {
             setRegion(rightSprite);  // Derecha
+            direccion = "derecha";
         }
+        NetworkData.clientThread.enviarMensajeAlServidor("mover!direccion!" + GameData.clienteNumero + "!" + direccion);
     }
+
     public void setMousePosition(int screenX, int screenY) {
         mousePosition.set(screenX, screenY);
         mousePosition = mousePosition.scl(1, -1).add(0, Gdx.graphics.getHeight());
@@ -189,7 +195,26 @@ public class Jugador extends Entidad {
     public Texture getArmaTextura() {
     	return armaEquipada.getArmaTextura();
     }
-
-	public void setEnemies(List<Enemigo> entidades) {
-		
-	}}
+    public TextureRegion obtenerRegionDesdeNombre(String region) {
+    	TextureRegion textura = null;
+        switch(region) {
+            case "arriba":
+            	textura = upSprite;
+                break;
+            case "abajo":
+            	textura = downSprite;
+             	break;
+            case "izquierda":
+            	textura = leftSprite;
+            	break;
+            case "derecha":
+            	textura = rightSprite;
+             	break;
+        }
+        return textura;
+    }
+    public int getId() {
+        return id;
+    }
+	
+}

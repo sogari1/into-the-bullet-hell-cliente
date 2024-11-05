@@ -4,11 +4,11 @@ import java.util.List;
 
 import com.badlogic.gdx.math.Vector2;
 import com.intothebullethell.game.globales.RecursoRuta;
-import com.intothebullethell.game.managers.MapManager;
+import com.intothebullethell.game.managers.EntidadManager;
 
 public class EnemigoFuerte extends Enemigo {
-	public EnemigoFuerte(Jugador[] jugadores, List<Enemigo> enemigos, MapManager mapManager) {
-		super(RecursoRuta.ENEMIGO, 10, 18, 14f, 2, 50, RecursoRuta.PROYECTIL_ESCOPETA, jugadores, enemigos, mapManager);
+	public EnemigoFuerte(Jugador[] jugadores, List<Enemigo> enemigos, EntidadManager entidadManager) {
+		super(RecursoRuta.ENEMIGO, 10, 18, 14f, 2, 50, RecursoRuta.PROYECTIL_ESCOPETA, jugadores, enemigos, entidadManager);
 	}
 	@Override
 	public void atacar() {
@@ -22,7 +22,7 @@ public class EnemigoFuerte extends Enemigo {
 	            Vector2 spreadDirection = new Vector2(direction).rotateDeg(i * 10);
 	            Vector2 spreadTarget = new Vector2(position).add(spreadDirection.scl(1000));
 	            
-	            mapManager.añadirProyectil(new Proyectil(getProjectilTextura(), position, spreadTarget, projectilVelocidad, daño, false)); 
+//	            entidadManager.añadirProyectil(new Proyectil(getProjectilTextura(), position, spreadTarget, projectilVelocidad, daño, false)); 
 	        }
 	    }
 	}

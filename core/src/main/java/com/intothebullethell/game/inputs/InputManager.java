@@ -9,7 +9,7 @@ public class InputManager implements InputProcessor {
 	private Jugador jugador;
     private boolean pausaSolicitada;
 
-    private boolean upPressed, downPressed, leftPressed, rightPressed, recargarPressed, disparandoPressed;
+    private boolean up, down, left, right, recargar, disparar;
     private boolean upJustPressed, downJustPressed, leftJustPressed, rightJustPressed, disparandoJustPressed;
     private boolean upJustReleased, downJustReleased, leftJustReleased, rightJustReleased, disparandoJustReleased;
 
@@ -30,23 +30,23 @@ public class InputManager implements InputProcessor {
     public boolean keyDown(int keycode) {
         switch (keycode) {
             case Keys.W:
-                upPressed = upJustPressed = true;
+                up = upJustPressed = true;
                 upJustReleased = false;
                 break;
             case Keys.A:
-                leftPressed = leftJustPressed = true;
+                left = leftJustPressed = true;
                 leftJustReleased = false;
                 break;
             case Keys.D:
-                rightPressed = rightJustPressed = true;
+                right = rightJustPressed = true;
                 rightJustReleased = false;
                 break;
             case Keys.S:
-                downPressed = downJustPressed = true;
+                down = downJustPressed = true;
                 downJustReleased = false;
                 break;
             case Keys.R:
-                recargarPressed = true;
+                recargar = true;
                 break;
             case Keys.ESCAPE:
                 pausaSolicitada = true;
@@ -59,23 +59,23 @@ public class InputManager implements InputProcessor {
     public boolean keyUp(int keycode) {
         switch (keycode) {
             case Keys.W:
-                upPressed = upJustPressed = false;
+                up = upJustPressed = false;
                 upJustReleased = true;
                 break;
             case Keys.A:
-                leftPressed = leftJustPressed = false;
+                left = leftJustPressed = false;
                 leftJustReleased = true;
                 break;
             case Keys.D:
-                rightPressed = rightJustPressed = false;
+                right = rightJustPressed = false;
                 rightJustReleased = true;
                 break;
             case Keys.S:
-                downPressed = downJustPressed = false;
+                down = downJustPressed = false;
                 downJustReleased = true;
                 break;
             case Keys.R:
-                recargarPressed = false;
+                recargar = false;
                 break;
         }
         return true;
@@ -84,7 +84,7 @@ public class InputManager implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.LEFT) {
-            disparandoPressed = disparandoJustPressed = true;
+            disparar = disparandoJustPressed = true;
             disparandoJustReleased = false;
         }
         return true;
@@ -93,7 +93,7 @@ public class InputManager implements InputProcessor {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.LEFT) {
-            disparandoPressed = disparandoJustPressed = false;
+            disparar = disparandoJustPressed = false;
             disparandoJustReleased = true;
         }
         return true;
@@ -184,27 +184,18 @@ public class InputManager implements InputProcessor {
         return false;
     }
 
-    public boolean isUpPressed() {
-        return upPressed;
-    }
+    public boolean isUp() { return up; }
+    public boolean isDown() { return down; }
+    public boolean isLeft() { return left; }
+    public boolean isRight() { return right; }
+    
 
-    public boolean isDownPressed() {
-        return downPressed;
-    }
 
-    public boolean isLeftPressed() {
-        return leftPressed;
+    public boolean isRecargar() {
+    	return recargar;
     }
-
-    public boolean isRightPressed() {
-        return rightPressed;
-    }
-
-    public boolean isRecargarPressed() {
-    	return recargarPressed;
-    }
-    public boolean isDisparandoPressed() {
-        return disparandoPressed;
+    public boolean isDisparar() {
+        return disparar;
     }
 
     public boolean isDisparandoJustPressed() {

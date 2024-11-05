@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.intothebullethell.game.IntoTheBulletHell;
@@ -18,11 +19,10 @@ import com.intothebullethell.game.globales.JuegoEstado;
 import com.intothebullethell.game.globales.NetworkData;
 import com.intothebullethell.game.globales.RecursoRuta;
 import com.intothebullethell.game.inputs.InputManager;
-import com.intothebullethell.game.managers.MapManager;
+import com.intothebullethell.game.managers.EntidadManager;
 import com.intothebullethell.game.managers.ProyectilManager;
 import com.intothebullethell.game.managers.RenderManager;
 import com.intothebullethell.game.managers.TileColisionManager;
-import com.intothebullethell.game.mecanicas.Tiempo;
 import com.intothebullethell.game.network.ClientThread;
 import com.intothebullethell.game.network.NetworkActionsListener;
 import com.intothebullethell.game.ui.Hud;
@@ -35,7 +35,7 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
 	private Jugador[] jugadores = new Jugador[NUM_JUGADORES];
 	private Hud[] huds = new Hud[NUM_JUGADORES]; 
 
-	private MapManager mapManager;
+	private EntidadManager entidadManager;
     private OrthographicCamera camara;
     private IntoTheBulletHell game;
     private Stage stage;
@@ -51,7 +51,7 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
     public MultiplayerPantalla(IntoTheBulletHell game) {
         this.game = game;
         this.tileCollisionManager = new TileColisionManager();
-        this.mapManager = new MapManager(camara, RenderManager.mapa, jugadores, tileCollisionManager);
+        this.entidadManager = new EntidadManager(camara, RenderManager.mapa, jugadores, tileCollisionManager);
     	this.camara = new OrthographicCamera();
     	this.inputManager = new InputManager();
     	Gdx.input.setInputProcessor(inputManager);
@@ -83,7 +83,7 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
     }
     private void crearJugadores() {
     	for (int i = 0; i < NUM_JUGADORES; i++) {
-			jugadores[i] = new Jugador(RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_ARRIBA,  RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_IZQUIERDA,  RecursoRuta.SPRITE_DERECHA, camara, inputManager, mapManager, proyectilManager);
+			jugadores[i] = new Jugador(i, RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_ARRIBA,  RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_IZQUIERDA,  RecursoRuta.SPRITE_DERECHA, camara, inputManager, entidadManager, proyectilManager);
 			jugadores[i].setPosition((15 + (i*2)) * tileCollisionManager.collisionLayer.getTileWidth(), 15 * tileCollisionManager.collisionLayer.getTileHeight());
 		}
     }
@@ -103,8 +103,8 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	    RenderManager.renderizarCamara(camara);
-	    draw();
 	    update(delta);   
+	    draw();
     }
 	
 	@Override
@@ -117,11 +117,9 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
 		chequearInputs();
 	    if(juegoEstado.equals(JuegoEstado.JUGANDO)) {
 	    	
-	    	mapManager.update(delta, jugadores);
-	    	
-	        for (Hud hud : huds) {
-	            hud.actualizarTemporizador(Tiempo.getTiempo());
-	        }
+//	        for (Hud hud : huds) {
+//	            hud.actualizarTemporizador(Tiempo.getTiempo());
+//	        }
 	    }
 	}
 
@@ -129,7 +127,7 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
 
 	private void draw() {
 		RenderManager.batchRender.begin();
-	    mapManager.draw();
+		entidadManager.draw();
 		    for (Jugador jugador : jugadores) {
 		    	jugador.draw(RenderManager.batchRender);
 		    }
@@ -153,12 +151,12 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
     }
 	private void manejarJuegoInputs() {
 		//vertical
-        if (inputManager.isUpPressed() && inputManager.isDownPressed()) {
+        if (inputManager.isUp() && inputManager.isDown()) {
         	jugadores[GameData.clienteNumero].velocity.y = 0;
-        } else if (inputManager.isUpPressed()) {
+        } else if (inputManager.isUp()) {
         	jugadores[GameData.clienteNumero].moverArriba();
         	clientThread.enviarMensajeAlServidor("mover!arriba!" + GameData.clienteNumero);
-        } else if (inputManager.isDownPressed()) {
+        } else if (inputManager.isDown()) {
         	jugadores[GameData.clienteNumero].moverAbajo();
         	clientThread.enviarMensajeAlServidor("mover!abajo!" + GameData.clienteNumero);
         } else {
@@ -172,12 +170,12 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
         }
         
         //horizontal
-        if (inputManager.isLeftPressed() && inputManager.isRightPressed()) {
+        if (inputManager.isLeft() && inputManager.isRight()) {
         	jugadores[GameData.clienteNumero].velocity.x = 0;
-        } else if (inputManager.isLeftPressed()) {
+        } else if (inputManager.isLeft()) {
         	jugadores[GameData.clienteNumero].moverIzquierda();
         	clientThread.enviarMensajeAlServidor("mover!izquierda!" + GameData.clienteNumero);
-        } else if (inputManager.isRightPressed()) {
+        } else if (inputManager.isRight()) {
         	jugadores[GameData.clienteNumero].moverDerecha();
         	clientThread.enviarMensajeAlServidor("mover!derecha!" + GameData.clienteNumero);
         } else {
@@ -190,14 +188,17 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
             clientThread.enviarMensajeAlServidor("mover!derecharelease!" + GameData.clienteNumero);
         }
 
-        if (inputManager.isRecargarPressed()) {
+        if (inputManager.isRecargar()) {
         	jugadores[GameData.clienteNumero].recargarArma();
         	clientThread.enviarMensajeAlServidor("recargar!"+GameData.clienteNumero);
         }
         
-        if (inputManager.isDisparandoJustPressed()) {
+        if (inputManager.isDisparar()) {
         	jugadores[GameData.clienteNumero].setDisparando(true);
+        	Vector3 unprojected = camara.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+        	clientThread.enviarMensajeAlServidor("disparo!disparar!" + GameData.clienteNumero + "!" + (int) unprojected.x + "!" + (int) unprojected.y);
         } else if (inputManager.isDisparandoJustReleased()) {
+        	clientThread.enviarMensajeAlServidor("disparo!dispararrelease!" + GameData.clienteNumero);
         	jugadores[GameData.clienteNumero].setDisparando(false);
         }
     }
@@ -230,20 +231,31 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
 		this.jugadores[jugadorId].setPosition(xPos, yPos);
 	}
 	@Override
+	public void actualizarDireccionJugador(int jugadorId, String region) {
+	    this.jugadores[jugadorId].setRegion(this.jugadores[jugadorId].obtenerRegionDesdeNombre(region));;
+	}
+	@Override
 	public void moverEnemigo(int enemyId, float xPos, float yPos) {
-		mapManager.moverEnemigo(enemyId, xPos, yPos);
+		entidadManager.moverEnemigo(enemyId, xPos, yPos);
 	}
 	@Override
+	public void removerEnemigo(int enemigoId) {
+		entidadManager.removerEnemigo(enemigoId);
+	}
+	@Override
+	public void añadirEnemigo(String tipoEnemigo, float x, float y) {
+		entidadManager.añadirEnemigo(tipoEnemigo, x, y);
+	}
+	@Override
+	public void añadirProyectil(String tipoProyectil, float x, float y, float velocidad, int daño, boolean disparadoPorJugador ) {
+		entidadManager.añadirProyectil(tipoProyectil, x, y, velocidad, daño, disparadoPorJugador );
+	}
 	public void actualizarProyectilPosicion(int projectileId, float xPos, float yPos) {
-	    proyectilManager.actualizarProyectilPosicion(projectileId, xPos, yPos);
+		entidadManager.moverProyectil(projectileId, xPos, yPos);
 	}
 	@Override
-	public void removerEnemigo() {
-		
-	}
-	@Override
-	public void añadirEnemigo(float x, float y) {
-		
+	public void removerProyectil(int proyectilId) {
+		entidadManager.removerProyectil(proyectilId);
 	}
 	@Override
 	public void actualizarTiempo(int tiempo) {

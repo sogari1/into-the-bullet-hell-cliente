@@ -74,29 +74,38 @@ public class ClientThread extends Thread {
 		case "mover": 
 			GameData.networkListener.actualizarJugadorPosicion(Integer.parseInt(parts[2]), Float.parseFloat(parts[3]), Float.parseFloat(parts[4]));
 			break;
+		case "direccion":
+			GameData.networkListener.actualizarDireccionJugador(Integer.parseInt(parts[2]), parts[3]);
+			break;
 		}
     }
 
     private void manejarEnemigos(String[] parts) {
     	switch (parts[1]) {
         case "mover":
-        	GameData.networkListener.moverEnemigo(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]));
+        	GameData.networkListener.moverEnemigo(Integer.parseInt(parts[2]), Float.parseFloat(parts[3]), Float.parseFloat(parts[4]));
             break;
         case "crear":
-        	GameData.networkListener.añadirEnemigo(Float.parseFloat(parts[2]), Float.parseFloat(parts[3]));
+        	GameData.networkListener.añadirEnemigo(parts[2], Float.parseFloat(parts[3]), Float.parseFloat(parts[4]));
         	break;
         case "remover":
-        	GameData.networkListener.removerEnemigo();
+        	GameData.networkListener.removerEnemigo(Integer.parseInt(parts[2]));
         	break;
     	}
     }
 
     private void manejarProyectiles(String[] parts) {
-        int projectileId = Integer.parseInt(parts[1]);
-        float xPos = Float.parseFloat(parts[2]);
-        float yPos = Float.parseFloat(parts[3]);
-        
-        GameData.networkListener.actualizarProyectilPosicion(projectileId, xPos, yPos);
+    	switch(parts[1]) {
+    	case "mover":
+    		GameData.networkListener.actualizarProyectilPosicion(Integer.parseInt(parts[2]), Float.parseFloat(parts[3]), Float.parseFloat(parts[4]));
+    		break;
+    	case "crear":
+    		GameData.networkListener.añadirProyectil(parts[2], Float.parseFloat(parts[3]), Float.parseFloat(parts[4]), Float.parseFloat(parts[5]), Integer.parseInt(parts[6]), Boolean.parseBoolean(parts[7]));
+    		break;
+    	case "remover":
+    		GameData.networkListener.removerProyectil(Integer.parseInt(parts[2]));
+    		break;
+    	}
     }
     private void manejarConexion(String state, int clienteNumero, InetAddress serverIp) {
         this.serverIp = serverIp;
@@ -111,6 +120,7 @@ public class ClientThread extends Thread {
         DatagramPacket packet = new DatagramPacket(data, data.length, serverIp, SERVER_PORT);
         try {
             socket.send(packet);
+//            System.out.println("CLIENTE: Mensaje enviado: " + msg);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

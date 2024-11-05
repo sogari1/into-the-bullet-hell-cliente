@@ -14,18 +14,17 @@ import com.intothebullethell.game.entidades.Jugador;
 import com.intothebullethell.game.globales.AssetRuta;
 import com.intothebullethell.game.globales.RecursoRuta;
 import com.intothebullethell.game.inputs.InputManager;
-import com.intothebullethell.game.managers.MapManager;
+import com.intothebullethell.game.managers.EntidadManager;
 import com.intothebullethell.game.managers.ProyectilManager;
 import com.intothebullethell.game.managers.RenderManager;
 import com.intothebullethell.game.managers.TileColisionManager;
-import com.intothebullethell.game.mecanicas.GenerarEnemigos;
 import com.intothebullethell.game.mecanicas.Tiempo;
 import com.intothebullethell.game.ui.Hud;
 import com.intothebullethell.sonido.Musica;
 
 public class SingleplayerPantalla implements Screen {
 
-	private MapManager mapManager;
+	private EntidadManager entidadManager;
     private OrthographicCamera camara;
     private IntoTheBulletHell game;
     private Jugador[] jugador;
@@ -47,14 +46,14 @@ public class SingleplayerPantalla implements Screen {
         this.gameOverPantalla = new GameOverPantalla(game);
         this.camara = new OrthographicCamera();
         this.inputManager = new InputManager();
-        this.mapManager = new MapManager(camara, RenderManager.mapa, jugador, tileCollisionManager);
+        this.entidadManager = new EntidadManager(camara, RenderManager.mapa, jugador, tileCollisionManager);
         this.proyectilManager = new ProyectilManager();
         Gdx.input.setInputProcessor(inputManager);
 
         this.tileCollisionManager = new TileColisionManager();
 
         this.jugador = new Jugador[1]; 
-        this.jugador[0] = new Jugador(RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_ARRIBA, RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_IZQUIERDA, RecursoRuta.SPRITE_DERECHA, camara, inputManager, mapManager, proyectilManager);
+        this.jugador[0] = new Jugador(0, RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_ARRIBA, RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_IZQUIERDA, RecursoRuta.SPRITE_DERECHA, camara, inputManager, entidadManager, proyectilManager);
         this.jugador[0].setPosition(15 * tileCollisionManager.collisionLayer.getTileWidth(), 15 * tileCollisionManager.collisionLayer.getTileHeight());
         this.hud = new Hud(RenderManager.batchRender, jugador[0]);
         this.jugador[0].setHud(hud);
@@ -93,7 +92,7 @@ public class SingleplayerPantalla implements Screen {
         RenderManager.renderizarCamara(camara);
         
         jugador[0].update(delta);
-        mapManager.update(delta, jugador);
+        entidadManager.update(delta, jugador);
         
         if (jugador[0].chequearMuerte()) {
             gameOver();
@@ -112,7 +111,7 @@ public class SingleplayerPantalla implements Screen {
     private void draw() {
     	RenderManager.batchRender.begin();
 	        jugador[0].draw(RenderManager.batchRender);
-	        mapManager.draw();
+	        entidadManager.draw();
         RenderManager.batchRender.end();
         
         RenderManager.batch.begin();
@@ -161,27 +160,29 @@ public class SingleplayerPantalla implements Screen {
     }
 
     private void manejarJuegoInputs() {
-        if (inputManager.isUpPressed() && inputManager.isDownPressed()) {
+        if (inputManager.isUp() && inputManager.isDown()) {
             jugador[0].velocity.y = 0;
-        } else if (inputManager.isUpPressed()) {
+        } else if (inputManager.isUp()) {
             jugador[0].moverArriba();
-        } else if (inputManager.isDownPressed()) {
+        } else if (inputManager.isDown()) {
             jugador[0].moverAbajo();
         } else {
             jugador[0].velocity.y = 0;
         }
 
-        if (inputManager.isLeftPressed() && inputManager.isRightPressed()) {
+        if (inputManager.isLeft() && inputManager.isRight()) {
             jugador[0].velocity.x = 0;
-        } else if (inputManager.isLeftPressed()) {
+        } else if (inputManager.isLeft()) {
             jugador[0].moverIzquierda();
-        } else if (inputManager.isRightPressed()) {
+        } else if (inputManager.isRight()) {
             jugador[0].moverDerecha();
         } else {
             jugador[0].velocity.x = 0;
         }
 
-        if (inputManager.isRecargarPressed()) {
+        
+        
+        if (inputManager.isRecargar()) {
             jugador[0].recargarArma();
         }
 

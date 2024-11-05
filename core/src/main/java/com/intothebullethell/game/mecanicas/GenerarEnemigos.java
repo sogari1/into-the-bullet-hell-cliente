@@ -16,7 +16,7 @@ import com.intothebullethell.game.entidades.EnemigoFuerte;
 import com.intothebullethell.game.entidades.EnemigoNormal;
 import com.intothebullethell.game.entidades.EnemigoRapido;
 import com.intothebullethell.game.entidades.Jugador;
-import com.intothebullethell.game.managers.MapManager;
+import com.intothebullethell.game.managers.EntidadManager;
 import com.intothebullethell.game.managers.TileColisionManager;
 
 public class GenerarEnemigos {
@@ -27,19 +27,19 @@ public class GenerarEnemigos {
     private Set<Vector2> occupiedPositions;
     private Jugador[] jugadores; 
     private TileColisionManager tileCollisionManager;
-    private MapManager mapManager;
+    private EntidadManager entidadManager;
     private Random random;
     
     private int numeroDeEnemigos = 10;
 
-    public GenerarEnemigos(OrthographicCamera camara, TiledMap map, List<Enemigo> enemigos, Jugador[] jugadores, TileColisionManager tileCollisionManager, MapManager mapManager) {
+    public GenerarEnemigos(OrthographicCamera camara, TiledMap map, List<Enemigo> enemigos, Jugador[] jugadores, TileColisionManager tileCollisionManager, EntidadManager entidadManager) {
         this.camara = camara;
         this.map = map;
         this.enemigos = enemigos;
         this.occupiedPositions = new HashSet<>();
         this.jugadores = jugadores;
         this.tileCollisionManager = tileCollisionManager;
-        this.mapManager = mapManager; 
+        this.entidadManager = entidadManager; 
         this.listaEnemigos = new ArrayList<>();
         this.random = new Random();
     }
@@ -113,8 +113,8 @@ public class GenerarEnemigos {
         return numeroDeEnemigos;
     }
     private void inicializarListaEnemigos() {
-    	 listaEnemigos.add(new EnemigoNormal(jugadores, enemigos, mapManager));
-         listaEnemigos.add(new EnemigoRapido(jugadores, enemigos, mapManager));
-         listaEnemigos.add(new EnemigoFuerte(jugadores, enemigos, mapManager));
+    	 listaEnemigos.add(new EnemigoNormal(jugadores, enemigos, entidadManager));
+         listaEnemigos.add(new EnemigoRapido(jugadores, enemigos, entidadManager));
+         listaEnemigos.add(new EnemigoFuerte(jugadores, enemigos, entidadManager));
     }
 }
