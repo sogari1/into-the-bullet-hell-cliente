@@ -2,7 +2,6 @@ package com.intothebullethell.game.mecanicas;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -22,30 +21,25 @@ import com.intothebullethell.game.managers.TileColisionManager;
 public class GenerarEnemigos {
     private OrthographicCamera camara;
     private TiledMap map;
-    private List<Enemigo> enemigos;
-    private ArrayList<Enemigo> listaEnemigos;
-    private Set<Vector2> occupiedPositions;
+    private ArrayList<Enemigo> listaEnemigos= new ArrayList<>(); 
+    private Set<Vector2> occupiedPositions  = new HashSet<>();
     private Jugador[] jugadores; 
     private TileColisionManager tileCollisionManager;
     private EntidadManager entidadManager;
-    private Random random;
+    private Random random = new Random();;
     
     private int numeroDeEnemigos = 10;
 
-    public GenerarEnemigos(OrthographicCamera camara, TiledMap map, List<Enemigo> enemigos, Jugador[] jugadores, TileColisionManager tileCollisionManager, EntidadManager entidadManager) {
+    public GenerarEnemigos(OrthographicCamera camara, TiledMap map, Jugador[] jugadores, TileColisionManager tileCollisionManager, EntidadManager entidadManager) {
         this.camara = camara;
         this.map = map;
-        this.enemigos = enemigos;
-        this.occupiedPositions = new HashSet<>();
         this.jugadores = jugadores;
         this.tileCollisionManager = tileCollisionManager;
         this.entidadManager = entidadManager; 
-        this.listaEnemigos = new ArrayList<>();
-        this.random = new Random();
     }
     public void generarEnemigos() {
-        enemigos.clear();
-        occupiedPositions.clear();
+    	occupiedPositions.clear();
+        entidadManager.grupoEnemigos.reset();
         for (int i = 0; i < numeroDeEnemigos; i++) {
             Vector2 spawnPosition;
             do {
@@ -55,7 +49,7 @@ public class GenerarEnemigos {
             Enemigo enemigo = crearnEnemigoAleatorio(spawnPosition);
             enemigo.setPosition(spawnPosition.x, spawnPosition.y);
             enemigo.updateBoundingBox();
-            enemigos.add(enemigo);
+            entidadManager.grupoEnemigos.añadirEntidad(enemigo);
         }
         sumarNumeroDeEnemigos();
     }
@@ -113,8 +107,8 @@ public class GenerarEnemigos {
         return numeroDeEnemigos;
     }
     private void inicializarListaEnemigos() {
-    	 listaEnemigos.add(new EnemigoNormal(jugadores, enemigos, entidadManager));
-         listaEnemigos.add(new EnemigoRapido(jugadores, enemigos, entidadManager));
-         listaEnemigos.add(new EnemigoFuerte(jugadores, enemigos, entidadManager));
+    	 listaEnemigos.add(new EnemigoNormal(jugadores, entidadManager));
+         listaEnemigos.add(new EnemigoRapido(jugadores, entidadManager));
+         listaEnemigos.add(new EnemigoFuerte(jugadores, entidadManager));
     }
 }

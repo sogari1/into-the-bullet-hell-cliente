@@ -25,14 +25,14 @@ public class Hud {
         textoRonda = new Texto("Ronda: 1", 20, Color.WHITE, 10, Gdx.graphics.getHeight() - 20);
         textoRonda.setShadow(4, 4, Color.BLACK);
         
-        textoTiempo = new Texto("Aleatorizando en: 30", 20, Color.WHITE, 10, Gdx.graphics.getHeight() - 20);
+        textoTiempo = new Texto("Aleatorizando en: 30s", 20, Color.WHITE, 10, Gdx.graphics.getHeight() - 20);
         textoTiempo.setShadow(4, 4, Color.BLACK);
         textoTiempo.centerX();
         
         textoMunicion = new Texto("", 20, Color.WHITE, 10, Gdx.graphics.getHeight() - 850);
         textoMunicion.setShadow(4, 4, Color.BLACK);
         
-        textoEnemigosRestantes = new Texto("Enemigos restantes: ", 20, Color.WHITE, 10, Gdx.graphics.getHeight() - 60);
+        textoEnemigosRestantes = new Texto("Enemigos restantes: 0", 20, Color.WHITE, 10, Gdx.graphics.getHeight() - 60);
         textoEnemigosRestantes.setShadow(4, 4, Color.BLACK);
         updateWeaponSprite();
     }

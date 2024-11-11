@@ -20,7 +20,6 @@ import com.intothebullethell.game.globales.NetworkData;
 import com.intothebullethell.game.globales.RecursoRuta;
 import com.intothebullethell.game.inputs.InputManager;
 import com.intothebullethell.game.managers.EntidadManager;
-import com.intothebullethell.game.managers.ProyectilManager;
 import com.intothebullethell.game.managers.RenderManager;
 import com.intothebullethell.game.managers.TileColisionManager;
 import com.intothebullethell.game.network.ClientThread;
@@ -39,7 +38,6 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
     private OrthographicCamera camara;
     private IntoTheBulletHell game;
     private Stage stage;
-    private ProyectilManager proyectilManager;
     private InputManager inputManager;
     private TileColisionManager tileCollisionManager;
     
@@ -56,7 +54,6 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
     	this.inputManager = new InputManager();
     	Gdx.input.setInputProcessor(inputManager);
            
-        this.proyectilManager = new ProyectilManager();
         
         crearJugadores();  
         crearHudJugadores();
@@ -83,7 +80,7 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
     }
     private void crearJugadores() {
     	for (int i = 0; i < NUM_JUGADORES; i++) {
-			jugadores[i] = new Jugador(i, RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_ARRIBA,  RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_IZQUIERDA,  RecursoRuta.SPRITE_DERECHA, camara, inputManager, entidadManager, proyectilManager);
+			jugadores[i] = new Jugador(i, RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_ARRIBA,  RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_IZQUIERDA,  RecursoRuta.SPRITE_DERECHA, camara, inputManager, entidadManager);
 			jugadores[i].setPosition((15 + (i*2)) * tileCollisionManager.collisionLayer.getTileWidth(), 15 * tileCollisionManager.collisionLayer.getTileHeight());
 		}
     }
@@ -95,9 +92,8 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
     }
     
 	@Override
-	public void show() {
-		
-	}
+	public void show() {}
+	
 	@Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -262,6 +258,22 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
 		for (Hud hud : huds) {
             hud.actualizarTemporizador(tiempo);
         }
+	}
+	@Override
+	public void actualizarRonda(int ronda) {
+		for (Hud hud : huds) {
+            hud.actualizarRonda(ronda);
+        }
+	}
+	@Override
+	public void actualizarEnemigosRestantes(int cantidad) {
+		for (Hud hud : huds) {
+            hud.actualizarEnemigosRestantes(cantidad);
+        }
+	}
+	@Override
+	public void actualizarVidaJugador(int jugadorId, int vidaActual) {
+		this.jugadores[jugadorId].setVida(vidaActual);
 	}
 
  }

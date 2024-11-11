@@ -60,14 +60,15 @@ public class ClientThread extends Thread {
             manejarProyectiles(parts);
             break;
         case "tiempo":
-        	manejarTiempo(parts);
+        	GameData.networkListener.actualizarTiempo(Integer.parseInt(parts[1]));
         	break;
+        case "ronda":
+        	GameData.networkListener.actualizarRonda(Integer.parseInt(parts[1]));
+        	break;
+        
         }
         
     }
-    private void manejarTiempo(String[] parts) {
-		
-	}
 
 	private void manejarJugador(String[] parts) {
 		switch(parts[1]) {
@@ -76,6 +77,11 @@ public class ClientThread extends Thread {
 			break;
 		case "direccion":
 			GameData.networkListener.actualizarDireccionJugador(Integer.parseInt(parts[2]), parts[3]);
+			break;
+		case "herido":
+			GameData.networkListener.actualizarVidaJugador(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
+			break;
+		case "muerto":
 			break;
 		}
     }
@@ -90,6 +96,8 @@ public class ClientThread extends Thread {
         	break;
         case "remover":
         	GameData.networkListener.removerEnemigo(Integer.parseInt(parts[2]));
+        case "cantidad":
+        	GameData.networkListener.actualizarEnemigosRestantes(Integer.parseInt(parts[2]));
         	break;
     	}
     }

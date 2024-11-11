@@ -15,7 +15,6 @@ import com.intothebullethell.game.globales.AssetRuta;
 import com.intothebullethell.game.globales.RecursoRuta;
 import com.intothebullethell.game.inputs.InputManager;
 import com.intothebullethell.game.managers.EntidadManager;
-import com.intothebullethell.game.managers.ProyectilManager;
 import com.intothebullethell.game.managers.RenderManager;
 import com.intothebullethell.game.managers.TileColisionManager;
 import com.intothebullethell.game.mecanicas.Tiempo;
@@ -33,7 +32,6 @@ public class SingleplayerPantalla implements Screen {
     private Tiempo tiempo;
     private PausaPantalla pausaPantalla;
     private GameOverPantalla gameOverPantalla;
-    private ProyectilManager proyectilManager;
     private InputManager inputManager;
     private TileColisionManager tileCollisionManager;
 
@@ -46,14 +44,12 @@ public class SingleplayerPantalla implements Screen {
         this.gameOverPantalla = new GameOverPantalla(game);
         this.camara = new OrthographicCamera();
         this.inputManager = new InputManager();
+        this.tileCollisionManager = new TileColisionManager();
         this.entidadManager = new EntidadManager(camara, RenderManager.mapa, jugador, tileCollisionManager);
-        this.proyectilManager = new ProyectilManager();
         Gdx.input.setInputProcessor(inputManager);
 
-        this.tileCollisionManager = new TileColisionManager();
-
         this.jugador = new Jugador[1]; 
-        this.jugador[0] = new Jugador(0, RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_ARRIBA, RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_IZQUIERDA, RecursoRuta.SPRITE_DERECHA, camara, inputManager, entidadManager, proyectilManager);
+        this.jugador[0] = new Jugador(0, RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_ARRIBA, RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_IZQUIERDA, RecursoRuta.SPRITE_DERECHA, camara, inputManager, entidadManager);
         this.jugador[0].setPosition(15 * tileCollisionManager.collisionLayer.getTileWidth(), 15 * tileCollisionManager.collisionLayer.getTileHeight());
         this.hud = new Hud(RenderManager.batchRender, jugador[0]);
         this.jugador[0].setHud(hud);
@@ -79,6 +75,7 @@ public class SingleplayerPantalla implements Screen {
             pause();
         }
         if (!pausado) {
+            RenderManager.renderizarCamara(camara);
             update(delta);          
             draw();
         }
@@ -89,7 +86,6 @@ public class SingleplayerPantalla implements Screen {
 
     private void update(float delta) {
         manejarJuegoInputs();
-        RenderManager.renderizarCamara(camara);
         
         jugador[0].update(delta);
         entidadManager.update(delta, jugador);
@@ -186,7 +182,7 @@ public class SingleplayerPantalla implements Screen {
             jugador[0].recargarArma();
         }
 
-        if (inputManager.isDisparandoJustPressed()) {
+        if (inputManager.isDisparar()) {
             jugador[0].setDisparando(true);
         } else if (inputManager.isDisparandoJustReleased()) {
             jugador[0].setDisparando(false);

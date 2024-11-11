@@ -24,7 +24,7 @@ public class EntidadManager {
 	public EntidadManager(OrthographicCamera camara, TiledMap map, Jugador[] jugadores, TileColisionManager tileCollisionManager) {
 		this.jugadores = jugadores;
 		crearGrupo();
-		//CLIENTE NO GENERA ENEMIGOS
+//		CLIENTE NO GENERA ENEMIGOS
 //		this.generadorEnemigos = new GenerarEnemigos(camara, RenderManager.mapa, grupoEnemigos.getEntidades(), jugadores, tileCollisionManager, this);
 	}
 	public void crearGrupo() {
@@ -80,13 +80,13 @@ public class EntidadManager {
 		Enemigo enemigo = null;
 		switch (tipoEnemigo) {
 		case "Normal":
-			enemigo = new EnemigoNormal(jugadores, grupoEnemigos.getEntidades(), this);
+			enemigo = new EnemigoNormal(jugadores, this);
 			break;
 		case "Rapido":
-			enemigo = new EnemigoRapido(jugadores, grupoEnemigos.getEntidades(), this);
+			enemigo = new EnemigoRapido(jugadores, this);
 			break;
 		case "Fuerte":
-			enemigo = new EnemigoFuerte(jugadores, grupoEnemigos.getEntidades(), this);
+			enemigo = new EnemigoFuerte(jugadores, this);
 			break;
 		}
 		 return enemigo;

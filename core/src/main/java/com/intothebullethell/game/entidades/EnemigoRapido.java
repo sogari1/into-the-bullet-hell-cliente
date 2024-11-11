@@ -1,14 +1,13 @@
 package com.intothebullethell.game.entidades;
 
-import java.util.List;
 
 import com.badlogic.gdx.math.Vector2;
 import com.intothebullethell.game.globales.RecursoRuta;
 import com.intothebullethell.game.managers.EntidadManager;
 
 public class EnemigoRapido extends Enemigo {
-    public EnemigoRapido(Jugador[] jugadores, List<Enemigo> enemigos, EntidadManager entidadManager) {
-        super(RecursoRuta.ENEMIGO, 20, 15, 10f, 1, 100, RecursoRuta.PROYECTIL_ESCOPETA, jugadores, enemigos, entidadManager);
+    public EnemigoRapido(Jugador[] jugadores, EntidadManager entidadManager) {
+        super(RecursoRuta.ENEMIGO, 20, 15, 10f, 1, 100, RecursoRuta.PROYECTIL_ESCOPETA, jugadores, entidadManager);
     }
     @Override
     public void atacar() {

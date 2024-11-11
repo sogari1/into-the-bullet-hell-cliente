@@ -13,7 +13,6 @@ import com.intothebullethell.game.globales.GameData;
 import com.intothebullethell.game.globales.NetworkData;
 import com.intothebullethell.game.inputs.InputManager;
 import com.intothebullethell.game.managers.EntidadManager;
-import com.intothebullethell.game.managers.ProyectilManager;
 import com.intothebullethell.game.mecanicas.ArmaAleatoria;
 import com.intothebullethell.game.objects.armas.Arma;
 import com.intothebullethell.game.ui.Hud;
@@ -32,12 +31,11 @@ public class Jugador extends Entidad {
     private float opacidad = 1.0f;
     private float escudoCoolDown = 0;
     private final float escudoCoolDownMaximo = 2.5f; 
-    private int vidaActual;
     private int id; 
     
     private boolean disparando = false;
 
-    public Jugador(int id, TextureRegion sprite, TextureRegion upSprite, TextureRegion downSprite, TextureRegion leftSprite, TextureRegion rightSprite, OrthographicCamera camara, InputManager inputManager, EntidadManager entidadManager, ProyectilManager proyectilManager) {
+    public Jugador(int id, TextureRegion sprite, TextureRegion upSprite, TextureRegion downSprite, TextureRegion leftSprite, TextureRegion rightSprite, OrthographicCamera camara, InputManager inputManager, EntidadManager entidadManager) {
     	super(sprite.getTexture(), 20, 100, null);
     	this.id = id;
         this.upSprite = upSprite;
@@ -45,7 +43,6 @@ public class Jugador extends Entidad {
         this.leftSprite = leftSprite;
         this.rightSprite = rightSprite;
         this.camara = camara;
-        this.vidaActual = vidaMaxima;
         this.armaEquipada = armaAleatoria.obtenerArmaAleatoria();
         this.inputManager = inputManager;
         this.inputManager.setJugador(this);
@@ -56,27 +53,25 @@ public class Jugador extends Entidad {
     public void draw(Batch batch) {
     	update(Gdx.graphics.getDeltaTime());
         super.draw(batch); 
-        entidadManager.grupoProyectiles.draw();
-
     }
 
     @Override
     public void update(float delta) {
 //    	Jugador[] jugadores = new Jugador[]{this};
     	 if (GameData.clienteNumero == this.getId()) { 
-    	 if (escudoCoolDown > 0) {
-    		 escudoCoolDown -= delta; 
-    		 opacidad = 0.5f;
-         }
-    	 else {
-             opacidad = 1.0f; 
-    	 }
-    	 setColor(1.0f, 1.0f, 1.0f, opacidad); 
-//    	 actualizarMovimiento();
-//         manejarDisparos(delta);
-         actualizarSprite();
-         actualizarCamara();
-//         entidadManager.grupoProyectiles.actualizarProyectiles(delta, entidadManager.getgrupoEnemigos().getEntidades(), jugadores);
+	    	 if (escudoCoolDown > 0) {
+	    		 escudoCoolDown -= delta; 
+	    		 opacidad = 0.5f;
+	         }
+	    	 else {
+	             opacidad = 1.0f; 
+	    	 }
+	    	 setColor(1.0f, 1.0f, 1.0f, opacidad); 
+//	    	 actualizarMovimiento();
+//	         manejarDisparos(delta);
+	         actualizarSprite();
+	         actualizarCamara();
+//	         entidadManager.grupoProyectiles.actualizarProyectiles(delta, entidadManager.getgrupoEnemigos().getEntidades(), jugadores);
     	 }
     }
 
@@ -106,7 +101,7 @@ public class Jugador extends Entidad {
             }
         }
     }
-    private void actualizarCamara() {
+    public void actualizarCamara() {
         camara.position.set(getX() + getWidth() / 2, getY() + getHeight() / 2, 0);
         camara.update();
     }

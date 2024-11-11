@@ -1,25 +1,23 @@
 package com.intothebullethell.game.entidades;
 
-import java.util.List;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.intothebullethell.game.managers.EntidadManager;
 import com.intothebullethell.game.managers.ProyectilManager;
 public abstract class Enemigo extends Entidad {
-    protected float intervaloAtaque;
-    protected float tiempoAtaque;
     protected Jugador[] jugadores;
-    protected List<Enemigo> enemigos;
-    protected float projectilVelocidad;
-    protected int daño;
     protected ProyectilManager proyectilManager;
     protected EntidadManager entidadManager; 
+    
+    protected float intervaloAtaque;
+    protected float tiempoAtaque;
+    protected float projectilVelocidad;
+    protected int daño;
 
-    public Enemigo(Texture texture, int vida, int velocidad, float intervaloAtaque, int daño, float projectilVelocidad, Texture projectilTextura, Jugador[] jugadores, List<Enemigo> enemigos, EntidadManager entidadManager) {
+    public Enemigo(Texture texture, int vida, int velocidad, float intervaloAtaque, int daño, float projectilVelocidad, Texture projectilTextura, Jugador[] jugadores, EntidadManager entidadManager) {
         super(texture, vida, velocidad, projectilTextura);
         this.jugadores = jugadores;
-        this.enemigos = enemigos;
         this.intervaloAtaque = intervaloAtaque;
         this.tiempoAtaque = intervaloAtaque;
         this.daño = daño;
@@ -77,10 +75,10 @@ public abstract class Enemigo extends Entidad {
 
     @Override
     public void recibirDaño(int daño) {
-        vidaMaxima -= daño;
+        vidaActual -= daño;
     }
     public boolean estaMuerto() {
-    	if(vidaMaxima <= 0) {
+    	if(vidaActual <= 0) {
     		return true;
     	}
     	return false;

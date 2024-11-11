@@ -13,29 +13,23 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ProyectilManager {
-    public List<Proyectil> proyectiles = new ArrayList<>();
+    private List<Proyectil> proyectiles = new ArrayList<>();
     private TileColisionManager tileColisionManager = new TileColisionManager();
-    private List<Proyectil> proyectilesAEliminar = new ArrayList<>(); // Lista temporal para proyectiles a eliminar
 
     public void agregarProyectil(Proyectil proyectil) {
         proyectiles.add(proyectil);
     }
 
     public void actualizarProyectiles(float delta, List<Enemigo> enemigos, Jugador[] jugadores) {
-        proyectilesAEliminar.clear(); // Limpiamos la lista de proyectiles a eliminar antes de actualizar
+        Iterator<Proyectil> iterator = proyectiles.iterator(); // Creamos un Iterator para recorrer la lista
 
-        for (Proyectil proyectil : proyectiles) {
+        while (iterator.hasNext()) {
+            Proyectil proyectil = iterator.next();
             proyectil.update(delta);
 
             if (chequearColisionProyectil(proyectil, enemigos, jugadores) || tileColisionManager.esColision(proyectil.getBoundingRectangle())) {
-                proyectilesAEliminar.add(proyectil); // Añadimos el proyectil a la lista temporal
+                iterator.remove(); 
             }
-        }
-    }
-
-    public void actualizarProyectilPosicion(int proyectilId, float x, float y) {
-        for (Proyectil proyectil : proyectiles) {
-            proyectil.setPosition(x, y);
         }
     }
 
@@ -72,12 +66,9 @@ public class ProyectilManager {
     }
 
     public void draw() {
-        for (Proyectil proyectil : proyectiles) {
+        for (Proyectil proyectil : new ArrayList<>(proyectiles)) { 
             proyectil.draw(RenderManager.batchRender);
         }
-
-        // Eliminamos proyectiles después de completar el ciclo de dibujo para evitar conflictos
-        proyectiles.removeAll(proyectilesAEliminar);
     }
 
     public List<Proyectil> getProyectiles() {
@@ -92,8 +83,5 @@ public class ProyectilManager {
 
     public void reset() {
         proyectiles.clear();
-        proyectilesAEliminar.clear();
     }
 }
-
-
