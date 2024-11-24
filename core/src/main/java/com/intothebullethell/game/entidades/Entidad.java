@@ -1,15 +1,12 @@
 package com.intothebullethell.game.entidades;
 
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.intothebullethell.game.managers.TileColisionManager;
 
 public abstract class Entidad extends Sprite {
-	private TileColisionManager tileCollisionManager = new TileColisionManager();
     protected int vidaMaxima, vidaActual;
     protected float velocidad;
     protected Texture projectilTextura;
@@ -22,16 +19,6 @@ public abstract class Entidad extends Sprite {
         this.vidaActual = vidaMaxima;
         this.velocidad = velocidad;
         this.projectilTextura = projectilTextura;
-    }
-
-    public void mover(Vector2 velocity) {
-        float oldX = getX();
-        float oldY = getY();
-
-        float newX = getX() + (velocity.x * Gdx.graphics.getDeltaTime());
-        float newY = getY() + (velocity.y * Gdx.graphics.getDeltaTime());
-        
-        tileCollisionManager.setPosicionChequearColision(this, newX, newY, oldX, oldY);
     }
 
 

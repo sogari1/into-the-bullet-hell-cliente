@@ -51,49 +51,6 @@ public class ClientThread extends Thread {
         	}
         }
     }
-    public boolean conectarAlServidor() {
-        int intentos = 0;
-        int tiempoEspera = 3000;
-        boolean conectado = false;
-
-        while (intentos < 3 && !conectado) {
-            try {
-                enviarMensajeAlServidor("conectar");
-                System.out.println("\nSolicitando conexión...");
-
-                socket.setSoTimeout(tiempoEspera); 
-                DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
-
-                try {
-                    socket.receive(packet);
-                    String message = new String(packet.getData()).trim();
-                    
-                    String[] parts = message.split(specialChar);
-
-                    if (parts[0].equals("conexion")) {
-                        manejarConexion(parts[1], Integer.parseInt(parts[2]), packet.getAddress());
-                        conectado = true; 
-                        this.conectado = true; 
-                        synchronized (lock) {
-                            lock.notify();  // Despierta el hilo que está esperando en 'run()'
-                        }
-                    }
-
-                } catch (SocketTimeoutException e) {
-                    System.out.println("CLIENTE: No se recibió respuesta del servidor en el intento " + (intentos + 1));
-                }
-
-            } catch (IOException e) {
-                System.out.println("CLIENTE: Error al intentar conectar: " + e.getMessage());
-            }
-            intentos++;
-        }
-        if(!conectado) {
-        	System.out.println("CLIENTE: No se pudo conectar al servidor. Volviendo al menú principal.");
-        	end();
-        }
-        return conectado;
-    }
     private void procesarMensajeDelServidor(DatagramPacket packet) {
         String message = new String(packet.getData()).trim();
 //        System.out.println("CLIENTE: Mensaje recibido de servidor: " + message);
@@ -167,6 +124,12 @@ public class ClientThread extends Thread {
 		case "arma":
 			GameData.networkListener.actualizarArmaJugador(Integer.parseInt(parts[2]), parts[3]);
 			break;
+		case "activo":
+			GameData.networkListener.actualizarActivoJugador(Integer.parseInt(parts[2]), parts[3]);
+			break;
+		case "activousado":
+			GameData.networkListener.activoUsadoJugador(Integer.parseInt(parts[2]), Boolean.parseBoolean(parts[3]));
+			break;
 		case "armamunicion":
 			GameData.networkListener.actualizarBalasArmaJugador(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]));
 			break;
@@ -211,6 +174,50 @@ public class ClientThread extends Thread {
                 break;
         }
     }
+    public boolean conectarAlServidor() {
+        int intentos = 0;
+        int tiempoEspera = 3000;
+        boolean conectado = false;
+
+        while (intentos < 3 && !conectado) {
+            try {
+                enviarMensajeAlServidor("conectar");
+                System.out.println("\nSolicitando conexión...");
+
+                socket.setSoTimeout(tiempoEspera); 
+                DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
+
+                try {
+                    socket.receive(packet);
+                    String message = new String(packet.getData()).trim();
+                    
+                    String[] parts = message.split(specialChar);
+
+                    if (parts[0].equals("conexion")) {
+                        manejarConexion(parts[1], Integer.parseInt(parts[2]), packet.getAddress());
+                        conectado = true; 
+                        this.conectado = true; 
+                        synchronized (lock) {
+                            lock.notify(); 
+                        }
+                    }
+
+                } catch (SocketTimeoutException e) {
+                    System.out.println("CLIENTE: No se recibió respuesta del servidor en el intento " + (intentos + 1));
+                }
+
+            } catch (IOException e) {
+                System.out.println("CLIENTE: Error al intentar conectar: " + e.getMessage());
+            }
+            intentos++;
+        }
+        if(!conectado) {
+        	System.out.println("CLIENTE: No se pudo conectar al servidor. Volviendo al menú principal.");
+        	end();
+        }
+        return conectado;
+    }
+
     public void enviarMensajeAlServidor(String msg){
         byte[] data = msg.getBytes();
         DatagramPacket packet = new DatagramPacket(data, data.length, serverIp, SERVER_PORT);

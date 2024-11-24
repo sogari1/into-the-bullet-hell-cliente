@@ -18,9 +18,13 @@ public class RecursoRuta {
     public static final Texture ARMA_PISTOLA = new Texture("imagenes/objetos/armas/pistola.png");
     public static final Texture ARMA_ESCOPETA = new Texture("imagenes/objetos/armas/escopeta.png");
     
-    //OBJETOS
+    //OBJETOS AGARRABLES
     public static final Texture CORAZON = new Texture("imagenes/objetos/objetosAgarrables/caja_vida.png");
     public static final Texture BALAS = new Texture("imagenes/objetos/objetosAgarrables/caja_municion.png");
+    
+    //OBJETOS ACTIVOS
+    public static final Texture ADRENALINA = new Texture("imagenes/objetos/objetosActivos/adrenalina.png");
+    public static final Texture SANGUCHE = new Texture("imagenes/objetos/objetosActivos/sanguche.png");
     
     //PROYECTILES
     public static final Texture PROYECTIL_PISTOLA = new Texture("imagenes/objetos/armaProyectil/bala.png");

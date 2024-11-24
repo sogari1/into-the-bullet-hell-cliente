@@ -14,18 +14,9 @@ public class Bengala {
     }
 
     public void usar(EntidadManager entidadManager) {
-        if (puedeUsarse()) {
-        	 entidadManager.getGrupoProyectiles().eliminarProyectilesEnemigos();
-
-            usosRestantes--;
-            tiempoDesdeUltimoUso = 0; 
-        }
     }
 
     public void update(float delta) {
-        if (tiempoDesdeUltimoUso < cooldown) {
-            tiempoDesdeUltimoUso += delta; 
-        }
     }
 
     public int getUsosRestantes() {

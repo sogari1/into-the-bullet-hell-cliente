@@ -27,14 +27,6 @@ public class Proyectil extends Sprite {
     }
 
     public void update(float delta) {
-    	Vector2 velocity = new Vector2(direccion).scl((velocidad * delta)*3);
-        posicion.add(velocity);
-        setPosition(posicion.x - getWidth() / 2, posicion.y - getHeight() / 2);
-        boundingBox.setPosition(getX(), getY());
-    }
-
-    public boolean collidesWith(Entidad Entidad) {
-        return boundingBox.overlaps(Entidad.getBoundingRectangle());
     }
 
     public int getDaño() {

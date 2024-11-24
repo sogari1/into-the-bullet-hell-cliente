@@ -14,6 +14,5 @@ public class Pistola extends Arma {
 
     @Override
     public void disparar(Vector2 position, Vector2 target, List<Proyectil> proyectiles) {
-        proyectiles.add(new Proyectil(proyectilTextura, position, target, proyectilVelocidad, daño, true));
     }
 }

@@ -16,8 +16,8 @@ public class MenuPantalla implements Screen {
 
     private Stage stage;
     private Music menuMusic;
-    private Texto tituloJuego;
-    private Boton playSingleplayerButton, playMultiplayerButton,exitButton;
+    private Texto tituloJuego, errorTexto;
+    private Boton jugarMultiplayerBoton, salirBoton;
 
     @Override
     public void show() {
@@ -31,25 +31,24 @@ public class MenuPantalla implements Screen {
         inicializarTextos();
         inicializarBotones();
         
-        stage.addActor(playSingleplayerButton);
-        stage.addActor(playMultiplayerButton);
-        stage.addActor(exitButton);
+        stage.addActor(jugarMultiplayerBoton);
+        stage.addActor(salirBoton);
     }
     public void inicializarTextos() {
-
         tituloJuego = new Texto("Into The Bullet Hell", 48, Color.WHITE, 0, Gdx.graphics.getHeight() - 300);
         tituloJuego.setShadow(6, 6, Color.GRAY);
         tituloJuego.centerX();
+        
+     	errorTexto = new Texto("", 15, Color.RED, 20, 30);
+    	errorTexto.setShadow(2, 2, Color.BLACK);
     }
     public void inicializarBotones() {
-    	playSingleplayerButton = new Boton(new Texto("Singleplayer", 24, Color.WHITE, 0, 200));
-        playSingleplayerButton.centrarX();
         
-        playMultiplayerButton = new Boton(new Texto("Multiplayer", 24, Color.WHITE, 0, 150));
-        playMultiplayerButton.centrarX();
+    	jugarMultiplayerBoton = new Boton(new Texto("Multiplayer", 24, Color.WHITE, 0, 150));
+        jugarMultiplayerBoton.centrarX();
         
-        exitButton = new Boton(new Texto("Salir", 24, Color.WHITE, 0, 100));
-        exitButton.centrarX();
+        salirBoton = new Boton(new Texto("Salir", 24, Color.WHITE, 0, 100));
+        salirBoton.centrarX();
     }
 
     @Override
@@ -58,21 +57,16 @@ public class MenuPantalla implements Screen {
          stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
          RenderManager.batch.begin();
          tituloJuego.draw(); 
-         playSingleplayerButton.draw();  
-         playMultiplayerButton.draw();  
-         exitButton.draw();  
+         jugarMultiplayerBoton.draw();  
+         salirBoton.draw();  
          RenderManager.batch.end();
          stage.draw();
          
-         if (playSingleplayerButton.isClicked()) {
-//             ((Game) Gdx.app.getApplicationListener()).setScreen(new SingleplayerPantalla()));
-             menuMusic.stop();
-         }
-         if (playMultiplayerButton.isClicked()) {
+         if (jugarMultiplayerBoton.isClicked()) {
         	 ScreenManager.setScreen(new MultiplayerPantalla());
              menuMusic.stop();
          }
-         if (exitButton.isClicked()) {
+         if (salirBoton.isClicked()) {
              Gdx.app.exit(); 
          }
     }
@@ -96,8 +90,7 @@ public class MenuPantalla implements Screen {
         stage.dispose();
         menuMusic.dispose();  
         tituloJuego.dispose(); 
-        playSingleplayerButton.dispose();  
-        playMultiplayerButton.dispose();
-        exitButton.dispose();  
+        jugarMultiplayerBoton.dispose();
+        salirBoton.dispose();  
     }
 }

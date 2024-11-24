@@ -13,6 +13,7 @@ public class EnemigoManager {
 		enemigos.add(enemigo);
 	}
 	public void update(float delta) {}
+	
 	public void draw() {
 		for (Enemigo enemigo : enemigos) {
 			enemigo.draw(RenderManager.batchRender);

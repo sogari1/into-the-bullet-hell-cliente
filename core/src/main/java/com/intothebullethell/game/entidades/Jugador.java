@@ -13,6 +13,9 @@ import com.intothebullethell.game.globales.GameData;
 import com.intothebullethell.game.globales.NetworkData;
 import com.intothebullethell.game.inputs.InputManager;
 import com.intothebullethell.game.managers.EntidadManager;
+import com.intothebullethell.game.objects.activos.Activo;
+import com.intothebullethell.game.objects.activos.Adrenalina;
+import com.intothebullethell.game.objects.activos.Sanguche;
 import com.intothebullethell.game.objects.armas.Arma;
 import com.intothebullethell.game.objects.armas.Escopeta;
 import com.intothebullethell.game.objects.armas.Pistola;
@@ -21,6 +24,7 @@ public class Jugador extends Entidad {
 	public OrthographicCamera camara;
     private Vector2 mousePosition = new Vector2();
     private Arma armaEquipada;
+    private Activo activoEquipado;
     private TextureRegion upSprite, downSprite, leftSprite, rightSprite;
     private InputManager inputManager;
     
@@ -145,6 +149,9 @@ public class Jugador extends Entidad {
     public void cambiarArma(String nombreArma) {
         this.armaEquipada = obtenerArma(nombreArma);
     }
+    public void cambiarActivo(String nombrActivo) {
+        this.activoEquipado = obtenerActivo(nombrActivo);
+    }
     public void setDisparando(boolean disparando) { 
     	this.disparando = disparando; 
     }
@@ -154,6 +161,9 @@ public class Jugador extends Entidad {
     public Arma getArmaEquipada() { 
     	return armaEquipada; 
     }
+    public Activo getActivoEquipado() { 
+    	return activoEquipado; 
+    }
     public float getShootTimer() {
         return shootTimer;
     }
@@ -162,6 +172,9 @@ public class Jugador extends Entidad {
     }
     public Texture getArmaTextura() {
     	return armaEquipada.getArmaTextura();
+    }
+    public void aumentarVelocidad(int velocidad) {
+    	this.velocidad += velocidad;
     }
     public TextureRegion obtenerRegionDesdeNombre(String region) {
     	TextureRegion textura = null;
@@ -193,8 +206,21 @@ public class Jugador extends Entidad {
 		}
 		return arma;
 	}
+    private Activo obtenerActivo(String nombreActivo) {
+    	Activo activo = null;
+    	switch (nombreActivo) {
+		case "Adrenalina":
+			activo = new Adrenalina();
+			break;
+		case "Sanguche":
+			activo =  new Sanguche();
+			break;
+		}
+		return activo;
+	}
     public int getId() {
         return id;
     }
+    
 	
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.intothebullethell.game.entidades.Proyectil;
-import com.intothebullethell.sonido.EfectoSonidoArma;
+import com.intothebullethell.sonido.EfectoSonido;
 
 public abstract class Arma {
     protected String nombre;
@@ -18,10 +18,10 @@ public abstract class Arma {
     protected boolean municionInfinita;
     protected int balasEnReserva;
     protected int balasEnMunicion;
-    private EfectoSonidoArma efectosSonido;
+    private EfectoSonido efectosSonido;
     
 
-    public Arma(String nombre, float proyectilVelocidad, int daño, float ratioFuego, int capacidadMunicion, boolean municionInfinita, int balasEnReserva, Texture proyectilTextura, Texture armaTextura, EfectoSonidoArma efectosSonido) {
+    public Arma(String nombre, float proyectilVelocidad, int daño, float ratioFuego, int capacidadMunicion, boolean municionInfinita, int balasEnReserva, Texture proyectilTextura, Texture armaTextura, EfectoSonido efectosSonido) {
         this.nombre = nombre;
         this.proyectilVelocidad = proyectilVelocidad;
         this.daño = daño;
@@ -59,7 +59,7 @@ public abstract class Arma {
             	balasEnMunicion--;  
             }
         }
-        efectosSonido.reproducirDisparo();
+        efectosSonido.reproducirSonido();
     }
 
 
@@ -98,5 +98,8 @@ public abstract class Arma {
 	}
 	public void aumentarBalasEnReserva(int balasEnReserva) {
 		this.balasEnReserva += balasEnReserva;
+	}
+	public void aumentarDaño(int daño){
+		this.daño += daño;
 	}
 }

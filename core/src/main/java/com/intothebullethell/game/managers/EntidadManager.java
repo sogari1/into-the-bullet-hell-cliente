@@ -2,7 +2,6 @@ package com.intothebullethell.game.managers;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.intothebullethell.game.entidades.Enemigo;
 import com.intothebullethell.game.entidades.EnemigoFuerte;
@@ -11,7 +10,6 @@ import com.intothebullethell.game.entidades.EnemigoRapido;
 import com.intothebullethell.game.entidades.Jugador;
 import com.intothebullethell.game.entidades.Proyectil;
 import com.intothebullethell.game.globales.RecursoRuta;
-import com.intothebullethell.game.mecanicas.GenerarEnemigos;
 import com.intothebullethell.game.objects.objetos.Balas;
 import com.intothebullethell.game.objects.objetos.Corazon;
 import com.intothebullethell.game.objects.objetos.Objeto;
@@ -22,10 +20,9 @@ public class EntidadManager {
 	public ProyectilManager grupoProyectiles;
 	public ObjetoManager grupoObjetos;
 	
-	private GenerarEnemigos generadorEnemigos;
 	private Jugador[] jugadores;
 	
-	public EntidadManager(OrthographicCamera camara, TiledMap map, Jugador[] jugadores, TileColisionManager tileCollisionManager) {
+	public EntidadManager(OrthographicCamera camara, Jugador[] jugadores) {
 		this.jugadores = jugadores;
 		crearGrupo();
 	}
@@ -33,9 +30,6 @@ public class EntidadManager {
 		this.grupoObjetos = new ObjetoManager();
 		this.grupoEnemigos = new EnemigoManager();
 		this.grupoProyectiles = new ProyectilManager();
-	}
-	public void update(float delta, Jugador[] jugadores) {
-		
 	}
 	public void draw() {
 		grupoEnemigos.draw();
@@ -68,9 +62,6 @@ public class EntidadManager {
 	public void removerProyectil(int proyectilId) {
 		grupoProyectiles.getProyectiles().remove(proyectilId);
 	}
-	public void generarEnemigos() {
-        generadorEnemigos.generarEnemigos();
-    }
 	public void añadirObjeto(String tipoObjeto, float x, float y) {
 		Objeto objeto = obtenerObjetoDesdeTipo(tipoObjeto);
 		objeto.setPosition(x, y);

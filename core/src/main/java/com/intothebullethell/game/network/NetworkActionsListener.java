@@ -13,6 +13,8 @@ public interface NetworkActionsListener {
 	void actualizarVidaJugador(int jugadorId, int vidaActual);
 	void actualizarArmaJugador(int jugadorId, String nombreArma);
 	void actualizarBalasArmaJugador(int jugadorId, int balasEnReserva, int balasEnMunicion);
+	void actualizarActivoJugador(int jugadorId, String nombreActivo);
+	void activoUsadoJugador(int jugadorId, boolean usado);
 	void jugadorMuerto(int jugadorId);
 	
 	//enemigo

@@ -48,9 +48,8 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
     
     @Override
 	public void show() {
-     	
-        this.tileCollisionManager = new TileColisionManager();
-        this.entidadManager = new EntidadManager(camara, RenderManager.mapa, jugadores, tileCollisionManager);
+     	this.tileCollisionManager = new TileColisionManager();
+        this.entidadManager = new EntidadManager(camara, jugadores);
     	this.camara = new OrthographicCamera();
     	this.inputManager = new InputManager();
     	Gdx.input.setInputProcessor(inputManager);
@@ -203,7 +202,9 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
         if (inputManager.isUsoBengalaPressed()) {
         	clientThread.enviarMensajeAlServidor("bengala!" + GameData.clienteNumero);
         } 	
-        
+        if(inputManager.isUsoActivoPressed()) {
+        	clientThread.enviarMensajeAlServidor("activo!" + GameData.clienteNumero);
+        }
         //disparos
         if (inputManager.isDisparar()) {
         	Vector3 jugadorMousePosicion = camara.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
@@ -289,6 +290,12 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
 		this.jugadores[jugadorId].getArmaEquipada().setBalasEnReserva(balasEnReserva);
 		this.jugadores[jugadorId].getArmaEquipada().setBalasEnMunicion(balasEnMunicion);
 	}
+	public void actualizarActivoJugador(int jugadorId, String nombreActivo) {
+		this.jugadores[jugadorId].cambiarActivo(nombreActivo);
+		if (jugadorId == GameData.clienteNumero) {
+			this.hud.actualizarActivo(this.jugadores[jugadorId].getActivoEquipado());
+		}
+	}
 	@Override
 	public void moverEnemigo(int enemyId, float xPos, float yPos) {
 		entidadManager.moverEnemigo(enemyId, xPos, yPos);
@@ -332,5 +339,11 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
 	public void actualizarEnemigosRestantes(int cantidad) {
 		this.hud.actualizarEnemigosRestantes(cantidad);
 	}
+	@Override
+	public void activoUsadoJugador(int jugadorId, boolean usado) {
+		if (jugadorId == GameData.clienteNumero) {
+			this.hud.setActivoUsado(usado);;
+		}
+	}	
 
  }

@@ -7,22 +7,13 @@ import com.badlogic.gdx.InputProcessor;
 
 public class InputManager implements InputProcessor {
 	private Jugador jugador;
-    private boolean pausaSolicitada;
 
-    private boolean up, down, left, right, recargar, disparar, usoBengala;
-    private boolean upJustReleased, downJustReleased, leftJustReleased, rightJustReleased, recargarJustReleased, disparandoJustReleased, usoBengalaJustReleased;
-    private boolean recargarJustPresed, usoBengalaJustPressed;
+    private boolean up, down, left, right, recargar, disparar, usoBengala, usoActivo;
+    private boolean upJustReleased, downJustReleased, leftJustReleased, rightJustReleased, recargarJustReleased, disparandoJustReleased, usoBengalaJustReleased, usoActivoJustReleased;
+    private boolean recargarJustPresed, usoBengalaJustPressed, usoActivoJustPressed;
     
     public void setJugador(Jugador jugador) {
         this.jugador = jugador;
-    }
-
-    public void setPausaSolicitada(boolean pausaSolicitada) {
-        this.pausaSolicitada = pausaSolicitada;
-    }
-
-    public boolean isPausaSolicitada() {
-        return pausaSolicitada;
     }
 
     @Override
@@ -52,9 +43,10 @@ public class InputManager implements InputProcessor {
             	usoBengala  = usoBengalaJustPressed = true;
             	usoBengalaJustReleased = false;
             	break;
-            case Keys.ESCAPE:
-                pausaSolicitada = true;
-                break;
+            case Keys.SPACE:
+            	usoActivo = usoActivoJustPressed = true;
+            	usoActivoJustReleased = false;
+            	break;
         }
         return true;
     }
@@ -85,6 +77,10 @@ public class InputManager implements InputProcessor {
             case Keys.Q:
             	usoBengala  = usoBengalaJustPressed = false;
             	usoBengalaJustReleased = true;
+            	break;
+            case Keys.SPACE:
+            	usoActivo = usoActivoJustPressed = false;
+            	usoActivoJustReleased = true;
             	break;
         }
         return true;
@@ -181,6 +177,13 @@ public class InputManager implements InputProcessor {
     	}
     	return false;
     }
+    public boolean isUsoActivoReleased() {
+    	if(usoActivoJustReleased) {
+    		usoActivoJustReleased = false;
+    		return true;
+    	}
+    	return false;
+    }
     public boolean isRecargarJustPressed() {
     	if(recargarJustPresed) {
     		recargarJustPresed = false;
@@ -195,6 +198,13 @@ public class InputManager implements InputProcessor {
     	}
     	return false;
     }
+    public boolean isUsoActivoPressed() {
+    	if(usoActivoJustPressed) {
+    		usoActivoJustPressed = false;
+    		return true;
+    	}
+    	return false;
+    }
     public boolean isUp() { return up; }
     public boolean isDown() { return down; }
     public boolean isLeft() { return left; }
@@ -202,6 +212,7 @@ public class InputManager implements InputProcessor {
     public boolean isRecargar() { return recargar; }
     public boolean isDisparar() { return disparar; }
     public boolean isUsoBengala() { return usoBengala; }
+    public boolean isUsoObjeto() { return usoActivo; }
 
 	@Override
 	public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
