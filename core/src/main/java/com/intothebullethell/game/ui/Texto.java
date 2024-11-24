@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.intothebullethell.game.globales.AssetRuta;
 import com.intothebullethell.game.managers.RenderManager;
@@ -108,7 +107,7 @@ public class Texto {
         this.fuente = fuente;
     }
 
-    public void setText(String text) {
+    public void setTexto(String text) {
         this.text = text;
     }
 

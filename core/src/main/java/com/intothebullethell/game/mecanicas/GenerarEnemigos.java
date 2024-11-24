@@ -49,7 +49,7 @@ public class GenerarEnemigos {
             Enemigo enemigo = crearnEnemigoAleatorio(spawnPosition);
             enemigo.setPosition(spawnPosition.x, spawnPosition.y);
             enemigo.updateBoundingBox();
-            entidadManager.grupoEnemigos.añadirEntidad(enemigo);
+            entidadManager.grupoEnemigos.añadirEnemigo(enemigo);
         }
         sumarNumeroDeEnemigos();
     }

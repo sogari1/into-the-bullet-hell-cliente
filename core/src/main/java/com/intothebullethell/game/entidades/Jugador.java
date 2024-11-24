@@ -13,19 +13,16 @@ import com.intothebullethell.game.globales.GameData;
 import com.intothebullethell.game.globales.NetworkData;
 import com.intothebullethell.game.inputs.InputManager;
 import com.intothebullethell.game.managers.EntidadManager;
-import com.intothebullethell.game.mecanicas.ArmaAleatoria;
 import com.intothebullethell.game.objects.armas.Arma;
-import com.intothebullethell.game.ui.Hud;
+import com.intothebullethell.game.objects.armas.Escopeta;
+import com.intothebullethell.game.objects.armas.Pistola;
 
 public class Jugador extends Entidad {
 	public OrthographicCamera camara;
     private Vector2 mousePosition = new Vector2();
     private Arma armaEquipada;
-    private ArmaAleatoria armaAleatoria = new ArmaAleatoria();
     private TextureRegion upSprite, downSprite, leftSprite, rightSprite;
-    private Hud hud;
     private InputManager inputManager;
-    private EntidadManager entidadManager;
     
     private float shootTimer = 0;
     private float opacidad = 1.0f;
@@ -34,72 +31,32 @@ public class Jugador extends Entidad {
     private int id; 
     
     private boolean disparando = false;
+    private boolean muerto = false;
 
     public Jugador(int id, TextureRegion sprite, TextureRegion upSprite, TextureRegion downSprite, TextureRegion leftSprite, TextureRegion rightSprite, OrthographicCamera camara, InputManager inputManager, EntidadManager entidadManager) {
-    	super(sprite.getTexture(), 20, 100, null);
+    	super(sprite.getTexture(), 20, 150, null);
     	this.id = id;
         this.upSprite = upSprite;
         this.downSprite = downSprite;
         this.leftSprite = leftSprite;
         this.rightSprite = rightSprite;
         this.camara = camara;
-        this.armaEquipada = armaAleatoria.obtenerArmaAleatoria();
         this.inputManager = inputManager;
         this.inputManager.setJugador(this);
-        this.entidadManager = entidadManager;
     }
 
     @Override
     public void draw(Batch batch) {
-    	update(Gdx.graphics.getDeltaTime());
         super.draw(batch); 
     }
 
     @Override
     public void update(float delta) {
-//    	Jugador[] jugadores = new Jugador[]{this};
-    	 if (GameData.clienteNumero == this.getId()) { 
-	    	 if (escudoCoolDown > 0) {
-	    		 escudoCoolDown -= delta; 
-	    		 opacidad = 0.5f;
-	         }
-	    	 else {
-	             opacidad = 1.0f; 
-	    	 }
-	    	 setColor(1.0f, 1.0f, 1.0f, opacidad); 
-//	    	 actualizarMovimiento();
-//	         manejarDisparos(delta);
-	         actualizarSprite();
-	         actualizarCamara();
-//	         entidadManager.grupoProyectiles.actualizarProyectiles(delta, entidadManager.getgrupoEnemigos().getEntidades(), jugadores);
-    	 }
-    }
-
-    private void actualizarMovimiento() {
-        mover(velocity);
-    }
-    
-    public void moverArriba() {
-        velocity.y = velocidad;
-    }
-    public void moverAbajo() {
-        velocity.y = -velocidad;
-    }
-    public void moverIzquierda() {
-        velocity.x = -velocidad;
-    }
-    public void moverDerecha() {
-        velocity.x = velocidad;
-    }
-    
-    private void manejarDisparos(float delta) {
-        if (isDisparando()) {
-            shootTimer -= delta;
-            if (shootTimer <= 0) {
-            	entidadManager.grupoProyectiles.dispararProyectil(camara, armaEquipada, getX() + getWidth() / 2, getY() + getHeight() / 2, Gdx.input.getX(), Gdx.input.getY());
-                shootTimer = armaEquipada.getRatioFuego(); 
-            }
-        }
+    	if (GameData.clienteNumero == this.getId() && !estaMuerto()) { 
+    		manejarEscudoCoolDown(delta);
+    		actualizarSprite();
+    		actualizarCamara();
+    	}
     }
     public void actualizarCamara() {
         camara.position.set(getX() + getWidth() / 2, getY() + getHeight() / 2, 0);
@@ -130,22 +87,24 @@ public class Jugador extends Entidad {
         }
         NetworkData.clientThread.enviarMensajeAlServidor("mover!direccion!" + GameData.clienteNumero + "!" + direccion);
     }
-
+    private void manejarEscudoCoolDown(float delta) {
+    	if (escudoCoolDown > 0) {
+    		escudoCoolDown -= delta;
+    		opacidad = 0.5f; 
+    	} else {
+    		opacidad = 1.0f;
+    	}
+    	setColor(1.0f, 1.0f, 1.0f, opacidad); 
+    }
     public void setMousePosition(int screenX, int screenY) {
         mousePosition.set(screenX, screenY);
         mousePosition = mousePosition.scl(1, -1).add(0, Gdx.graphics.getHeight());
     }
     public void recargarArma() {
-    	armaEquipada.reload();
+    	armaEquipada.recargar();
     }
     public int getVidaActual() {
         return vidaActual;
-    }
-    public boolean chequearMuerte() {
-        if (vidaActual == 0) {
-            return true; 
-        }
-        return false; 
     }
     @Override
     public void recibirDaño(int daño) {
@@ -157,19 +116,34 @@ public class Jugador extends Entidad {
             escudoCoolDown = escudoCoolDownMaximo; 
         }
     }
+    public void aumentarVida(int vida) {
+    	this.vidaActual += vida;
+    	if(this.vidaActual > this.vidaMaxima) {
+    		this.vidaActual = this.vidaMaxima;
+    	}
+    }
+    public boolean chequearMuerte() {
+        if (vidaActual <= 0) {
+            return true; 
+        }
+        return false; 
+    }
+    public void morir() {
+    	this.muerto = true;
+    }
+    public boolean estaMuerto() {
+        return muerto;
+    }
+    public void reiniciar() {
+    	disparando = false;
+    	velocity.x = 0;
+    	velocity.y = 0;
+    }
     public float getShieldCooldown() {
         return escudoCoolDown;
     }
-	public void setHud(Hud hud) { 
-    	this.hud = hud; 
-    }
-    public void cambiarArma() {
-        this.armaEquipada = armaAleatoria.obtenerArmaAleatoria();
-        hud.updateWeaponSprite(); 
-    }
-    public void setArma(Arma arma) {
-        this.armaEquipada = arma;
-        hud.updateWeaponSprite();
+    public void cambiarArma(String nombreArma) {
+        this.armaEquipada = obtenerArma(nombreArma);
     }
     public void setDisparando(boolean disparando) { 
     	this.disparando = disparando; 
@@ -186,7 +160,6 @@ public class Jugador extends Entidad {
     public void setShootTimer(float shootTimer) {
         this.shootTimer = shootTimer;
     }
-
     public Texture getArmaTextura() {
     	return armaEquipada.getArmaTextura();
     }
@@ -208,6 +181,18 @@ public class Jugador extends Entidad {
         }
         return textura;
     }
+    private Arma obtenerArma(String nombreArma) {
+    	Arma arma = null;
+    	switch (nombreArma) {
+		case "Pistola":
+			arma = new Pistola();
+			break;
+		case "Escopeta":
+			arma =  new Escopeta();
+			break;
+		}
+		return arma;
+	}
     public int getId() {
         return id;
     }

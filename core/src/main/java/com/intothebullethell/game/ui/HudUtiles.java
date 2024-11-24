@@ -7,43 +7,43 @@ import com.intothebullethell.game.objects.armas.Arma;
 
 public class HudUtiles {
 	
-	public static void drawHearts(Texture fullHeart, Texture halfHeart, Texture emptyHeart, int maxHealth, int currentHealth, int x, int y) {
-	    int healthPerHeart = 2;
-	    int maxHearts = maxHealth / healthPerHeart;
-	    int fullHearts = currentHealth / healthPerHeart;
-	    boolean hasHalfHeart = (currentHealth % healthPerHeart) > 0;
+	public static void dibujarCorazones(Texture corazonLleno, Texture corazonMitad, Texture corazonVacio, int vidaMaxima, int vidaActual, int x, int y) {
+	    int vidaPorCorazon = 2;
+	    int corazonesMaximos = vidaMaxima / vidaPorCorazon;
+	    int corazonesLlenos = vidaActual / vidaPorCorazon;
+	    boolean tieneMedioCorazon = (vidaActual % vidaPorCorazon) > 0;
 
-	    int heartsPerRow = 5;
-	    int rowSpacing = fullHeart.getHeight() + 5; 
+	    int corazonesPorFila = 5;
+	    int filaEspaciado = corazonLleno.getHeight() + 5; 
 
-	    for (int i = 0; i < maxHearts; i++) {
-	        int row = i / heartsPerRow; // Fila actual
-	        int col = i % heartsPerRow; // Columna actual
+	    for (int i = 0; i < corazonesMaximos; i++) {
+	        int row = i / corazonesPorFila; 
+	        int col = i % corazonesPorFila; 
 
-	        int posX = x + col * fullHeart.getWidth();
-	        int posY = y - row * rowSpacing;
+	        int posX = x + col * corazonLleno.getWidth();
+	        int posY = y - row * filaEspaciado;
 
-	        if (i < fullHearts) {
-	        	RenderManager.batch.draw(fullHeart, posX, posY);
-	        } else if (hasHalfHeart && i == fullHearts) {
-	        	RenderManager.batch.draw(halfHeart, posX, posY);
+	        if (i < corazonesLlenos) {
+	        	RenderManager.batch.draw(corazonLleno, posX, posY);
+	        } else if (tieneMedioCorazon && i == corazonesLlenos) {
+	        	RenderManager.batch.draw(corazonMitad, posX, posY);
 	        } else {
-	        	RenderManager.batch.draw(emptyHeart, posX, posY);
+	        	RenderManager.batch.draw(corazonVacio, posX, posY);
 	        }
 	    }
 	}
 
 
-	public static void drawWeaponInfo(Arma currentWeapon, Texto ammoTexto) {
-	    if (currentWeapon != null) {
-	        String ammoText = currentWeapon.esMunicionInfinita() ? 
-	            "Reserva: " + currentWeapon.getBalasEnReserva() + " / INF" :
-	            "Cargador: " + currentWeapon.getBalasEnMunicion() + " / Reserva: " + currentWeapon.getBalasEnReserva();
+	public static void dibujarMunicion(Arma armaActual, Texto municionArma) {
+	    if (armaActual != null) {
+	        String ammoText = armaActual.esMunicionInfinita() ? 
+	            "Reserva: " + armaActual.getBalasEnReserva() + " / INF" :
+	            "Cargador: " + armaActual.getBalasEnMunicion() + " / Reserva: " + armaActual.getBalasEnReserva();
 	        
-	        ammoTexto.setText(ammoText);
-	        ammoTexto.setPosition(10, Gdx.graphics.getHeight() - 850);
+	        municionArma.setTexto(ammoText);
+	        municionArma.setPosition(10, Gdx.graphics.getHeight() - 675);
 
-	        ammoTexto.draw();
+	        municionArma.draw();
 	    }
 	}
 

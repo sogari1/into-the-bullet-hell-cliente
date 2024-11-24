@@ -20,19 +20,6 @@ public class ProyectilManager {
         proyectiles.add(proyectil);
     }
 
-    public void actualizarProyectiles(float delta, List<Enemigo> enemigos, Jugador[] jugadores) {
-        Iterator<Proyectil> iterator = proyectiles.iterator(); // Creamos un Iterator para recorrer la lista
-
-        while (iterator.hasNext()) {
-            Proyectil proyectil = iterator.next();
-            proyectil.update(delta);
-
-            if (chequearColisionProyectil(proyectil, enemigos, jugadores) || tileColisionManager.esColision(proyectil.getBoundingRectangle())) {
-                iterator.remove(); 
-            }
-        }
-    }
-
     private boolean chequearColisionProyectil(Proyectil proyectil, List<Enemigo> enemigos, Jugador[] jugadores) {
         for (Enemigo enemigo : enemigos) {
             if (proyectil.collidesWith(enemigo) && proyectil.isDisparadoPorJugador()) {
@@ -64,7 +51,9 @@ public class ProyectilManager {
             }
         }
     }
-
+    public void eliminarProyectilesEnemigos() {
+        proyectiles.removeIf(proyectil -> !proyectil.isDisparadoPorJugador());
+    }
     public void draw() {
         for (Proyectil proyectil : new ArrayList<>(proyectiles)) { 
             proyectil.draw(RenderManager.batchRender);

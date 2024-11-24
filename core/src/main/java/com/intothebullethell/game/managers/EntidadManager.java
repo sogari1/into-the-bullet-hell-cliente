@@ -12,11 +12,15 @@ import com.intothebullethell.game.entidades.Jugador;
 import com.intothebullethell.game.entidades.Proyectil;
 import com.intothebullethell.game.globales.RecursoRuta;
 import com.intothebullethell.game.mecanicas.GenerarEnemigos;
+import com.intothebullethell.game.objects.objetos.Balas;
+import com.intothebullethell.game.objects.objetos.Corazon;
+import com.intothebullethell.game.objects.objetos.Objeto;
 
 public class EntidadManager {
 
 	public EnemigoManager grupoEnemigos;
 	public ProyectilManager grupoProyectiles;
+	public ObjetoManager grupoObjetos;
 	
 	private GenerarEnemigos generadorEnemigos;
 	private Jugador[] jugadores;
@@ -24,37 +28,35 @@ public class EntidadManager {
 	public EntidadManager(OrthographicCamera camara, TiledMap map, Jugador[] jugadores, TileColisionManager tileCollisionManager) {
 		this.jugadores = jugadores;
 		crearGrupo();
-//		CLIENTE NO GENERA ENEMIGOS
-//		this.generadorEnemigos = new GenerarEnemigos(camara, RenderManager.mapa, grupoEnemigos.getEntidades(), jugadores, tileCollisionManager, this);
 	}
 	public void crearGrupo() {
+		this.grupoObjetos = new ObjetoManager();
 		this.grupoEnemigos = new EnemigoManager();
 		this.grupoProyectiles = new ProyectilManager();
 	}
 	public void update(float delta, Jugador[] jugadores) {
-//		CLIENTE NO ACTUALIZA 
-//		grupoEnemigos.update(delta);
-//		grupoProyectiles.actualizarProyectiles(delta, grupoEnemigos.getEntidades(), jugadores);
 		
 	}
 	public void draw() {
 		grupoEnemigos.draw();
 		grupoProyectiles.draw();
+		grupoObjetos.draw();
 	}
 	public void reset() {
 		grupoEnemigos.reset();
 		grupoProyectiles.reset();
+		grupoObjetos.reset();
 	}
 	public void añadirEnemigo(String tipoEnemigo, float x, float y) {
 		Enemigo enemigo = crearEnemigoDesdeTipo(tipoEnemigo);
 		enemigo.setPosition(x, y);
-		grupoEnemigos.añadirEntidad(enemigo);
+		grupoEnemigos.añadirEnemigo(enemigo);
 	}
 	public void moverEnemigo(int enemigoId, float x, float y) {
-		grupoEnemigos.getEntidades().get(enemigoId).setPosition(x, y);
+		grupoEnemigos.getEnemigos().get(enemigoId).setPosition(x, y);
 	}
 	public void removerEnemigo(int enemigoId) {
-		grupoEnemigos.getEntidades().remove(enemigoId);
+		grupoEnemigos.getEnemigos().remove(enemigoId);
 	}
 	
 	public void añadirProyectil(String tipoProyectil, float x, float y, float velocidad, int daño, boolean disparadoPorJugador) {
@@ -66,15 +68,25 @@ public class EntidadManager {
 	public void removerProyectil(int proyectilId) {
 		grupoProyectiles.getProyectiles().remove(proyectilId);
 	}
-	
 	public void generarEnemigos() {
         generadorEnemigos.generarEnemigos();
     }
+	public void añadirObjeto(String tipoObjeto, float x, float y) {
+		Objeto objeto = obtenerObjetoDesdeTipo(tipoObjeto);
+		objeto.setPosition(x, y);
+		grupoObjetos.agregarObjeto(objeto);	
+	}
+	public void removerObjeto(int objetoId) {
+		grupoObjetos.getObjetos().remove(objetoId);
+	}
 	public EnemigoManager getgrupoEnemigos(){
         return grupoEnemigos;
 	}
 	public ProyectilManager getGrupoProyectiles() {
 	        return grupoProyectiles;
+	}
+	public ObjetoManager getObjetoManager() {
+		return grupoObjetos;
 	}
 	private Enemigo crearEnemigoDesdeTipo(String tipoEnemigo) {
 		Enemigo enemigo = null;
@@ -102,5 +114,17 @@ public class EntidadManager {
 			break;
 	    }
 		return textura;
+	}
+	private Objeto obtenerObjetoDesdeTipo(String tipoObjeto) {
+		Objeto objeto = null;
+	    switch (tipoObjeto) {
+	    case "corazon":
+	    	objeto = new Corazon();
+	    	break;
+	    case "balas":
+	    	objeto = new Balas();
+	    	break;
+	    }
+		return objeto;
 	}
 }

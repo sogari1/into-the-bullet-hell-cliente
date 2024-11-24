@@ -4,6 +4,7 @@ import com.intothebullethell.game.entidades.Jugador;
 
 public class Tiempo extends Thread {
     private static int tiempo;
+    private int tiempoSobrevivido = 0;
     private Jugador[] jugadores;
     private boolean running;
     private boolean paused;
@@ -23,9 +24,10 @@ public class Tiempo extends Thread {
                     Thread.sleep(1000);
                     System.out.println("Aleatorizar arma en: " + tiempo + " segundos");
                     tiempo--;
+                    tiempoSobrevivido++;
                     if (tiempo < 0) {
                         for (Jugador jugador : jugadores) {
-                            jugador.cambiarArma();
+//                            jugador.cambiarArma();
                         }
                         tiempo = 30;
                     }
@@ -47,7 +49,9 @@ public class Tiempo extends Thread {
     public static int getTiempo() {
         return tiempo;
     }
-
+    public int getTiempoSobrevivido() {
+    	return tiempoSobrevivido;
+	}
     public void detener() {
         running = false;
     }

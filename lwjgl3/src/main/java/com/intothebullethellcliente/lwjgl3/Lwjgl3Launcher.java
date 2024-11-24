@@ -22,7 +22,7 @@ public class Lwjgl3Launcher {
         configuration.setForegroundFPS(60);
         configuration.setWindowedMode(ConfiguracionJuego.ANCHO, ConfiguracionJuego.ALTURA);
         configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png");
-        configuration.setResizable(false);
+        configuration.setResizable(ConfiguracionJuego.REDIMENSIONABLE);
         return configuration;
     }
 }

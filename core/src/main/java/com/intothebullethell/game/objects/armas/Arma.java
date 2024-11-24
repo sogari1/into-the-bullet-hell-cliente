@@ -41,7 +41,7 @@ public abstract class Arma {
         return balasEnMunicion > 0 || municionInfinita;
     }
 
-    public void reload() {
+    public void recargar() {
         if (!municionInfinita && balasEnReserva > 0) {
             int bulletsNeeded = capacidadMunicion - balasEnMunicion;
             int bulletsToReload = Math.min(bulletsNeeded, balasEnReserva);
@@ -90,4 +90,13 @@ public abstract class Arma {
 	public Texture getArmaTextura() {
         return armaTextura;
     }
+	public void setBalasEnMunicion(int balasEnMunicion) {
+		this.balasEnMunicion = balasEnMunicion;
+	}
+	public void setBalasEnReserva(int balasEnReserva) {
+		this.balasEnReserva = balasEnReserva;
+	}
+	public void aumentarBalasEnReserva(int balasEnReserva) {
+		this.balasEnReserva += balasEnReserva;
+	}
 }

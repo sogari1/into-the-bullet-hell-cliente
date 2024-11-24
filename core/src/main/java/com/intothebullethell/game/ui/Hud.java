@@ -4,28 +4,28 @@ package com.intothebullethell.game.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.intothebullethell.game.entidades.Jugador;
 import com.intothebullethell.game.globales.RecursoRuta;
 import com.intothebullethell.game.managers.RenderManager;
+import com.intothebullethell.game.objects.armas.Arma;
 
 public class Hud {
     private Stage stage;
-    private Jugador jugador;
     private Texture armaSprite;
     private Texto textoRonda, textoTiempo, textoMunicion, textoEnemigosRestantes;
-    private int ronda;
+    private Arma armaEquipada;
+    
+    private int vidaMaxima;
+    private int vidaActual;
+    
+    public Hud() {
+        this.stage = new Stage(new ScreenViewport(), RenderManager.batchRender);
 
-    public Hud(SpriteBatch batchRender, Jugador jugador) {
-        this.jugador = jugador;
-        this.stage = new Stage(new ScreenViewport(), batchRender);
-
-        textoRonda = new Texto("Ronda: 1", 20, Color.WHITE, 10, Gdx.graphics.getHeight() - 20);
+        textoRonda = new Texto("Ronda: 0", 20, Color.WHITE, 10, Gdx.graphics.getHeight() - 20);
         textoRonda.setShadow(4, 4, Color.BLACK);
         
-        textoTiempo = new Texto("Aleatorizando en: 30s", 20, Color.WHITE, 10, Gdx.graphics.getHeight() - 20);
+        textoTiempo = new Texto("Randomizador en: 0s", 20, Color.WHITE, 10, Gdx.graphics.getHeight() - 20);
         textoTiempo.setShadow(4, 4, Color.BLACK);
         textoTiempo.centerX();
         
@@ -34,35 +34,42 @@ public class Hud {
         
         textoEnemigosRestantes = new Texto("Enemigos restantes: 0", 20, Color.WHITE, 10, Gdx.graphics.getHeight() - 60);
         textoEnemigosRestantes.setShadow(4, 4, Color.BLACK);
-        updateWeaponSprite();
+        
     }
 
     public void draw() {
-        int x = Gdx.graphics.getWidth() - (jugador.getVidaMaxima() / 2 * RecursoRuta.CORAZON_LLENO.getWidth());
-        int y = Gdx.graphics.getHeight() - RecursoRuta.CORAZON_LLENO.getHeight();
-        
-        HudUtiles.drawHearts(RecursoRuta.CORAZON_LLENO, RecursoRuta.CORAZON_MITAD, RecursoRuta.CORAZON_VACIO, jugador.getVidaMaxima(), jugador.getVidaActual(), x, y);
-        HudUtiles.drawWeaponInfo(jugador.getArmaEquipada(), textoMunicion);
-        RenderManager.batch.draw(armaSprite, Gdx.graphics.getWidth() - armaSprite.getWidth() * 3 - 20, 0, armaSprite.getWidth() * 3 - 10, armaSprite.getHeight() * 3);
-        textoRonda.draw();
+    	
+    	int x = Gdx.graphics.getWidth() - (vidaMaxima / 2 * RecursoRuta.CORAZON_LLENO.getWidth());
+    	int y = Gdx.graphics.getHeight() - RecursoRuta.CORAZON_LLENO.getHeight();
+    		
+    	HudUtiles.dibujarCorazones(RecursoRuta.CORAZON_LLENO, RecursoRuta.CORAZON_MITAD, RecursoRuta.CORAZON_VACIO, vidaMaxima, vidaActual, x, y);
+    	HudUtiles.dibujarMunicion(armaEquipada, textoMunicion);
+    	if(armaSprite != null) {
+    		RenderManager.batch.draw(armaSprite, Gdx.graphics.getWidth() - armaSprite.getWidth() * 3 - 20, 0, armaSprite.getWidth() * 3 - 10, armaSprite.getHeight() * 3);
+    	}
+    	textoRonda.draw();
         textoTiempo.draw();
         textoEnemigosRestantes.draw();
         stage.draw();
     }
 
     public void actualizarRonda(int nuevaRonda) {
-        ronda = nuevaRonda;
-        textoRonda.setText("Ronda: " + ronda);
+        textoRonda.setTexto("Ronda: " + nuevaRonda);
     }
 
     public void actualizarTemporizador(int tiempo) {
-        textoTiempo.setText("Aleatorizando en: " + tiempo + "s");
+        textoTiempo.setTexto("Aleatorizando en: " + tiempo + "s");
     }
     public void actualizarEnemigosRestantes(int cantidad) {
-    	textoEnemigosRestantes.setText("Enemigos restantes: " + cantidad);
+    	textoEnemigosRestantes.setTexto("Enemigos restantes: " + cantidad);
     }
-    public void updateWeaponSprite() {
-    	armaSprite = jugador.getArmaTextura();
+    public void actualizarVida(int vidaMaxima, int vidaActual) {
+        this.vidaMaxima = vidaMaxima;
+        this.vidaActual = vidaActual;
+    }
+    public void actualizarArma(Arma arma) {
+        this.armaEquipada = arma;
+        this.armaSprite = armaEquipada.getArmaTextura();
     }
 
     public void dispose() {

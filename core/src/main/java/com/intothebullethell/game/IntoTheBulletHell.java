@@ -1,6 +1,7 @@
 package com.intothebullethell.game;
 
 import com.badlogic.gdx.Game;
+import com.intothebullethell.game.managers.ScreenManager;
 import com.intothebullethell.game.pantallas.MenuPantalla;
 import com.intothebullethell.sonido.Musica;
 
@@ -10,7 +11,8 @@ public class IntoTheBulletHell extends Game {
     @Override
     public void create() {
         musica = new Musica();
-        setScreen(new MenuPantalla(this));
+        ScreenManager.gameApp = this;
+        ScreenManager.setScreen(new MenuPantalla());
     }
     @Override
     public void render() {
@@ -19,7 +21,7 @@ public class IntoTheBulletHell extends Game {
 
     @Override
     public void dispose() {
-        super.dispose();
+    	getScreen().dispose();
     }
 
     public Musica getMusica() {
