@@ -14,14 +14,12 @@ public abstract class Enemigo extends Entidad {
     protected float projectilVelocidad;
     protected int daño;
 
-    public Enemigo(Texture texture, int vida, int velocidad, float intervaloAtaque, int daño, float projectilVelocidad, Texture projectilTextura, Jugador[] jugadores, EntidadManager entidadManager) {
+    public Enemigo(Texture texture, int vida, int velocidad, float intervaloAtaque, int daño, float projectilVelocidad, Texture projectilTextura) {
         super(texture, vida, velocidad, projectilTextura);
-        this.jugadores = jugadores;
         this.intervaloAtaque = intervaloAtaque;
         this.tiempoAtaque = intervaloAtaque;
         this.daño = daño;
         this.projectilVelocidad = projectilVelocidad;
-        this.entidadManager = entidadManager; 
     }
 
     @Override

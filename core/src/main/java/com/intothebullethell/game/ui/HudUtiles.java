@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.intothebullethell.game.managers.RenderManager;
 import com.intothebullethell.game.objects.armas.Arma;
+import com.intothebullethell.game.objects.armas.Bengala;
 
 public class HudUtiles {
 	
@@ -36,9 +37,7 @@ public class HudUtiles {
 
 	public static void dibujarMunicion(Arma armaActual, Texto municionArma) {
 	    if (armaActual != null) {
-	        String ammoText = armaActual.esMunicionInfinita() ? 
-	            "Reserva: " + armaActual.getBalasEnReserva() + " / INF" :
-	            "Cargador: " + armaActual.getBalasEnMunicion() + " / Reserva: " + armaActual.getBalasEnReserva();
+	        String ammoText = "Cargador: " + armaActual.getBalasEnMunicion() + " / Reserva: " + armaActual.getBalasEnReserva();
 	        
 	        municionArma.setTexto(ammoText);
 	        municionArma.setPosition(10, Gdx.graphics.getHeight() - 675);
@@ -46,5 +45,23 @@ public class HudUtiles {
 	        municionArma.draw();
 	    }
 	}
+	
+	public static void dibujarBengalas(Bengala bengala, Texture bengalaSprite) {
+	    if (bengala != null && bengalaSprite != null) {
+	        int usosRestantes = bengala.getUsosRestantes();
+	        int espaciadoVertical = bengalaSprite.getHeight() + 5; 
+	        int inicioX = Gdx.graphics.getWidth() - bengalaSprite.getWidth() - 120;
+	        int inicioY = Gdx.graphics.getHeight() - bengalaSprite.getHeight() - 10;
+
+	        for (int i = 0; i < usosRestantes; i++) {
+	            int posX = inicioX; // Bengalas alineadas verticalmente
+	            int posY = inicioY - i * espaciadoVertical; // Cada bengala más abajo que la anterior
+
+	            RenderManager.batch.draw(bengalaSprite, posX, posY);
+	        }
+	    }
+	}
+
+
 
 }

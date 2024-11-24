@@ -49,7 +49,7 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
     @Override
 	public void show() {
      	this.tileCollisionManager = new TileColisionManager();
-        this.entidadManager = new EntidadManager(camara, jugadores);
+        this.entidadManager = new EntidadManager();
     	this.camara = new OrthographicCamera();
     	this.inputManager = new InputManager();
     	Gdx.input.setInputProcessor(inputManager);
@@ -73,7 +73,7 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
 	}
     private void crearJugadores() {
     	for (int i = 0; i < NUM_JUGADORES; i++) {
-			jugadores[i] = new Jugador(i, RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_ARRIBA,  RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_IZQUIERDA,  RecursoRuta.SPRITE_DERECHA, camara, inputManager, entidadManager);
+			jugadores[i] = new Jugador(i, RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_ARRIBA,  RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_IZQUIERDA,  RecursoRuta.SPRITE_DERECHA, camara, inputManager);
 			jugadores[i].setPosition((15 + (i*2)) * tileCollisionManager.collisionLayer.getTileWidth(), 15 * tileCollisionManager.collisionLayer.getTileHeight());
 		}
     }
@@ -273,30 +273,6 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
 		}
 	}
 	@Override
-	public void actualizarVidaJugador(int jugadorId, int vidaActual) {
-		if (jugadorId == GameData.clienteNumero) {
-		this.hud.actualizarVida(this.jugadores[jugadorId].getVidaMaxima(), vidaActual);
-		}
-	}
-	@Override
-	public void actualizarArmaJugador(int jugadorId, String nombreArma) {
-		this.jugadores[jugadorId].cambiarArma(nombreArma);
-		if (jugadorId == GameData.clienteNumero) {
-			this.hud.actualizarArma(this.jugadores[jugadorId].getArmaEquipada());
-		}
-	}
-	@Override
-	public void actualizarBalasArmaJugador(int jugadorId, int balasEnReserva, int balasEnMunicion) {
-		this.jugadores[jugadorId].getArmaEquipada().setBalasEnReserva(balasEnReserva);
-		this.jugadores[jugadorId].getArmaEquipada().setBalasEnMunicion(balasEnMunicion);
-	}
-	public void actualizarActivoJugador(int jugadorId, String nombreActivo) {
-		this.jugadores[jugadorId].cambiarActivo(nombreActivo);
-		if (jugadorId == GameData.clienteNumero) {
-			this.hud.actualizarActivo(this.jugadores[jugadorId].getActivoEquipado());
-		}
-	}
-	@Override
 	public void moverEnemigo(int enemyId, float xPos, float yPos) {
 		entidadManager.moverEnemigo(enemyId, xPos, yPos);
 	}
@@ -342,8 +318,39 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
 	@Override
 	public void activoUsadoJugador(int jugadorId, boolean usado) {
 		if (jugadorId == GameData.clienteNumero) {
-			this.hud.setActivoUsado(usado);;
+			this.hud.isActivoUsado(usado);
+		}
+	}
+	@Override
+	public void actualizarCantidadBengalas(int jugadorId, int cantidad) {
+		this.jugadores[jugadorId].usoRestantesBengala(cantidad);
+		if (jugadorId == GameData.clienteNumero) {
+			this.hud.actualizarBengala(this.jugadores[jugadorId].getBengala());
 		}
 	}	
+	public void actualizarActivoJugador(int jugadorId, String nombreActivo) {
+		this.jugadores[jugadorId].cambiarActivo(nombreActivo);
+		if (jugadorId == GameData.clienteNumero) {
+			this.hud.actualizarActivo(this.jugadores[jugadorId].getActivoEquipado());
+		}
+	}
+	@Override
+	public void actualizarVidaJugador(int jugadorId, int vidaMaxima, int vidaActual) {
+		if (jugadorId == GameData.clienteNumero) {
+		this.hud.actualizarVida(vidaMaxima, vidaActual);
+		}
+	}
+	@Override
+	public void actualizarArmaJugador(int jugadorId, String nombreArma) {
+		this.jugadores[jugadorId].cambiarArma(nombreArma);
+		if (jugadorId == GameData.clienteNumero) {
+			this.hud.actualizarArma(this.jugadores[jugadorId].getArmaEquipada());
+		}
+	}
+	@Override
+	public void actualizarBalasArmaJugador(int jugadorId, int balasEnReserva, int balasEnMunicion) {
+		this.jugadores[jugadorId].getArmaEquipada().setBalasEnReserva(balasEnReserva);
+		this.jugadores[jugadorId].getArmaEquipada().setBalasEnMunicion(balasEnMunicion);
+	}
 
  }

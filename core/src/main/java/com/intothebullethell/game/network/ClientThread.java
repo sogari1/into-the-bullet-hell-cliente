@@ -116,7 +116,7 @@ public class ClientThread extends Thread {
 			GameData.networkListener.actualizarDireccionJugador(Integer.parseInt(parts[2]), parts[3]);
 			break;
 		case "vida":
-			GameData.networkListener.actualizarVidaJugador(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
+			GameData.networkListener.actualizarVidaJugador(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]));
 			break;
 		case "muerto":
 			GameData.networkListener.jugadorMuerto(Integer.parseInt(parts[2]));
@@ -132,6 +132,9 @@ public class ClientThread extends Thread {
 			break;
 		case "armamunicion":
 			GameData.networkListener.actualizarBalasArmaJugador(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]));
+			break;
+		case "bengala":
+			GameData.networkListener.actualizarCantidadBengalas(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
 			break;
 		}
     }

@@ -12,16 +12,17 @@ import com.badlogic.gdx.math.Vector3;
 import com.intothebullethell.game.globales.GameData;
 import com.intothebullethell.game.globales.NetworkData;
 import com.intothebullethell.game.inputs.InputManager;
-import com.intothebullethell.game.managers.EntidadManager;
 import com.intothebullethell.game.objects.activos.Activo;
 import com.intothebullethell.game.objects.activos.Adrenalina;
 import com.intothebullethell.game.objects.activos.Sanguche;
 import com.intothebullethell.game.objects.armas.Arma;
+import com.intothebullethell.game.objects.armas.Bengala;
 import com.intothebullethell.game.objects.armas.Escopeta;
 import com.intothebullethell.game.objects.armas.Pistola;
 
 public class Jugador extends Entidad {
 	public OrthographicCamera camara;
+	private Bengala bengala = new Bengala();
     private Vector2 mousePosition = new Vector2();
     private Arma armaEquipada;
     private Activo activoEquipado;
@@ -37,7 +38,7 @@ public class Jugador extends Entidad {
     private boolean disparando = false;
     private boolean muerto = false;
 
-    public Jugador(int id, TextureRegion sprite, TextureRegion upSprite, TextureRegion downSprite, TextureRegion leftSprite, TextureRegion rightSprite, OrthographicCamera camara, InputManager inputManager, EntidadManager entidadManager) {
+    public Jugador(int id, TextureRegion sprite, TextureRegion upSprite, TextureRegion downSprite, TextureRegion leftSprite, TextureRegion rightSprite, OrthographicCamera camara, InputManager inputManager) {
     	super(sprite.getTexture(), 20, 150, null);
     	this.id = id;
         this.upSprite = upSprite;
@@ -77,16 +78,16 @@ public class Jugador extends Entidad {
         String direccion;
 
         if (angulo >= 45 && angulo < 135) {
-            setRegion(upSprite);  // Arriba
+            setRegion(upSprite);  
             direccion = "arriba";
         } else if (angulo >= 135 && angulo < 225) {
-            setRegion(leftSprite);  // Izquierda
+            setRegion(leftSprite);  
             direccion = "izquierda";
         } else if (angulo >= 225 && angulo < 315) {
-            setRegion(downSprite);  // Abajo
+            setRegion(downSprite); 
             direccion = "abajo";
         } else {
-            setRegion(rightSprite);  // Derecha
+            setRegion(rightSprite);  
             direccion = "derecha";
         }
         NetworkData.clientThread.enviarMensajeAlServidor("mover!direccion!" + GameData.clienteNumero + "!" + direccion);
@@ -103,9 +104,6 @@ public class Jugador extends Entidad {
     public void setMousePosition(int screenX, int screenY) {
         mousePosition.set(screenX, screenY);
         mousePosition = mousePosition.scl(1, -1).add(0, Gdx.graphics.getHeight());
-    }
-    public void recargarArma() {
-    	armaEquipada.recargar();
     }
     public int getVidaActual() {
         return vidaActual;
@@ -152,6 +150,9 @@ public class Jugador extends Entidad {
     public void cambiarActivo(String nombrActivo) {
         this.activoEquipado = obtenerActivo(nombrActivo);
     }
+    public void usoRestantesBengala(int cantidad) {
+    	this.bengala.setUsosRestantes(cantidad);
+    }
     public void setDisparando(boolean disparando) { 
     	this.disparando = disparando; 
     }
@@ -164,6 +165,9 @@ public class Jugador extends Entidad {
     public Activo getActivoEquipado() { 
     	return activoEquipado; 
     }
+    public Bengala getBengala() {
+		return bengala;
+	}
     public float getShootTimer() {
         return shootTimer;
     }

@@ -10,13 +10,15 @@ import com.intothebullethell.game.globales.RecursoRuta;
 import com.intothebullethell.game.managers.RenderManager;
 import com.intothebullethell.game.objects.activos.Activo;
 import com.intothebullethell.game.objects.armas.Arma;
+import com.intothebullethell.game.objects.armas.Bengala;
 
 public class Hud {
     private Stage stage;
-    private Texture armaSprite, activoSprite;
+    private Texture armaSprite, activoSprite, bengalaSprite;
     private Texto textoRonda, textoTiempo, textoMunicion, textoEnemigosRestantes;
     private Arma armaEquipada;
     private Activo activoEquipado;
+    private Bengala bengala;
     
     private int vidaMaxima, vidaActual;
     private boolean activoUsado = false;
@@ -46,6 +48,7 @@ public class Hud {
     		
     	HudUtiles.dibujarCorazones(RecursoRuta.CORAZON_LLENO, RecursoRuta.CORAZON_MITAD, RecursoRuta.CORAZON_VACIO, vidaMaxima, vidaActual, x, y);
     	HudUtiles.dibujarMunicion(armaEquipada, textoMunicion);
+    	HudUtiles.dibujarBengalas(bengala, bengalaSprite);
     	if(armaSprite != null) {
     		RenderManager.batch.draw(armaSprite, Gdx.graphics.getWidth() - armaSprite.getWidth() * 3 - 20, 0, armaSprite.getWidth() * 3 - 10, armaSprite.getHeight() * 3);
     	}
@@ -74,15 +77,19 @@ public class Hud {
     }
     public void actualizarArma(Arma arma) {
         this.armaEquipada = arma;
-        this.armaSprite = armaEquipada.getArmaTextura();
+        this.armaSprite = this.armaEquipada.getArmaTextura();
     }
     public void actualizarActivo(Activo activo) {
         this.activoEquipado = activo;
-        this.activoSprite = activoEquipado.getActivoTextura();
+        this.activoSprite = this.activoEquipado.getActivoTextura();
     }
-    public void setActivoUsado(boolean activoUsado) {
+    public void isActivoUsado(boolean activoUsado) {
     	this.activoUsado = activoUsado;
     }
+    public void actualizarBengala(Bengala bengala) {
+    	this.bengala = bengala;
+    	this.bengalaSprite = this.bengala.getSpriteBengala();
+	}
     public void dispose() {
         stage.dispose();
         textoRonda.dispose();
@@ -90,4 +97,5 @@ public class Hud {
         textoMunicion.dispose();
         textoEnemigosRestantes.dispose();
     }
+
 }

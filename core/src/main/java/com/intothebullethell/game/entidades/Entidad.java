@@ -21,12 +21,6 @@ public abstract class Entidad extends Sprite {
         this.projectilTextura = projectilTextura;
     }
 
-
-    public void updateBoundingBox() {
-        boundingBox.setPosition(getX(), getY());
-        boundingBox.setSize(getWidth(), getHeight());
-    }
-
     public Rectangle getBoundingBox() {
         return boundingBox;
     }

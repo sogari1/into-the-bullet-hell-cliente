@@ -1,45 +1,41 @@
 package com.intothebullethell.game.managers;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.intothebullethell.game.entidades.Enemigo;
 import com.intothebullethell.game.entidades.EnemigoFuerte;
 import com.intothebullethell.game.entidades.EnemigoNormal;
 import com.intothebullethell.game.entidades.EnemigoRapido;
-import com.intothebullethell.game.entidades.Jugador;
 import com.intothebullethell.game.entidades.Proyectil;
 import com.intothebullethell.game.globales.RecursoRuta;
-import com.intothebullethell.game.objects.objetos.Balas;
-import com.intothebullethell.game.objects.objetos.Corazon;
-import com.intothebullethell.game.objects.objetos.Objeto;
+import com.intothebullethell.game.objects.objetos.Agarrable;
+import com.intothebullethell.game.objects.objetos.CajaMunicion;
+import com.intothebullethell.game.objects.objetos.CajaVida;
 
 public class EntidadManager {
 
 	public EnemigoManager grupoEnemigos;
 	public ProyectilManager grupoProyectiles;
-	public ObjetoManager grupoObjetos;
+	public AgarrableManager grupoAgarrables;
 	
-	private Jugador[] jugadores;
 	
-	public EntidadManager(OrthographicCamera camara, Jugador[] jugadores) {
-		this.jugadores = jugadores;
+	public EntidadManager() {
 		crearGrupo();
 	}
 	public void crearGrupo() {
-		this.grupoObjetos = new ObjetoManager();
+		this.grupoAgarrables = new AgarrableManager();
 		this.grupoEnemigos = new EnemigoManager();
 		this.grupoProyectiles = new ProyectilManager();
 	}
 	public void draw() {
 		grupoEnemigos.draw();
 		grupoProyectiles.draw();
-		grupoObjetos.draw();
+		grupoAgarrables.draw();
 	}
 	public void reset() {
 		grupoEnemigos.reset();
 		grupoProyectiles.reset();
-		grupoObjetos.reset();
+		grupoAgarrables.reset();
 	}
 	public void añadirEnemigo(String tipoEnemigo, float x, float y) {
 		Enemigo enemigo = crearEnemigoDesdeTipo(tipoEnemigo);
@@ -63,12 +59,12 @@ public class EntidadManager {
 		grupoProyectiles.getProyectiles().remove(proyectilId);
 	}
 	public void añadirObjeto(String tipoObjeto, float x, float y) {
-		Objeto objeto = obtenerObjetoDesdeTipo(tipoObjeto);
-		objeto.setPosition(x, y);
-		grupoObjetos.agregarObjeto(objeto);	
+		Agarrable agarrable = obtenerObjetoDesdeTipo(tipoObjeto);
+		agarrable.setPosition(x, y);
+		grupoAgarrables.agregarAgarrable(agarrable);	
 	}
 	public void removerObjeto(int objetoId) {
-		grupoObjetos.getObjetos().remove(objetoId);
+		grupoAgarrables.getObjetos().remove(objetoId);
 	}
 	public EnemigoManager getgrupoEnemigos(){
         return grupoEnemigos;
@@ -76,20 +72,20 @@ public class EntidadManager {
 	public ProyectilManager getGrupoProyectiles() {
 	        return grupoProyectiles;
 	}
-	public ObjetoManager getObjetoManager() {
-		return grupoObjetos;
+	public AgarrableManager getObjetoManager() {
+		return grupoAgarrables;
 	}
 	private Enemigo crearEnemigoDesdeTipo(String tipoEnemigo) {
 		Enemigo enemigo = null;
 		switch (tipoEnemigo) {
 		case "Normal":
-			enemigo = new EnemigoNormal(jugadores, this);
+			enemigo = new EnemigoNormal();
 			break;
 		case "Rapido":
-			enemigo = new EnemigoRapido(jugadores, this);
+			enemigo = new EnemigoRapido();
 			break;
 		case "Fuerte":
-			enemigo = new EnemigoFuerte(jugadores, this);
+			enemigo = new EnemigoFuerte();
 			break;
 		}
 		 return enemigo;
@@ -97,6 +93,9 @@ public class EntidadManager {
 	private Texture obtenerTexturaProyectil(String tipoProyectil) {
 		Texture textura = null;
 	    switch (tipoProyectil) {
+	    case "Enemigo":
+	    	textura = RecursoRuta.PROYECTIL_ENEMIGO;
+	    	break;
 	    case "Pistola":
 	    	textura = RecursoRuta.PROYECTIL_PISTOLA;
 	    	break;
@@ -106,14 +105,14 @@ public class EntidadManager {
 	    }
 		return textura;
 	}
-	private Objeto obtenerObjetoDesdeTipo(String tipoObjeto) {
-		Objeto objeto = null;
+	private Agarrable obtenerObjetoDesdeTipo(String tipoObjeto) {
+		Agarrable objeto = null;
 	    switch (tipoObjeto) {
-	    case "corazon":
-	    	objeto = new Corazon();
+	    case "CajaVida":
+	    	objeto = new CajaVida();
 	    	break;
-	    case "balas":
-	    	objeto = new Balas();
+	    case "CajaMunicion":
+	    	objeto = new CajaMunicion();
 	    	break;
 	    }
 		return objeto;

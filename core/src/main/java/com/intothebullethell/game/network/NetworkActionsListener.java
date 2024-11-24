@@ -10,10 +10,11 @@ public interface NetworkActionsListener {
 	//jugador
 	void actualizarJugadorPosicion(int jugadorId, float x, float y);
 	void actualizarDireccionJugador(int jugadorId, String region);
-	void actualizarVidaJugador(int jugadorId, int vidaActual);
+	void actualizarVidaJugador(int jugadorId, int vidaMaxima, int vidaActual);
 	void actualizarArmaJugador(int jugadorId, String nombreArma);
 	void actualizarBalasArmaJugador(int jugadorId, int balasEnReserva, int balasEnMunicion);
 	void actualizarActivoJugador(int jugadorId, String nombreActivo);
+	void actualizarCantidadBengalas(int jugadorId, int cantidad);
 	void activoUsadoJugador(int jugadorId, boolean usado);
 	void jugadorMuerto(int jugadorId);
 	
