@@ -50,6 +50,7 @@ public class RecursoRuta {
     //OBJETOS ACTIVOS
     public static final Texture ADRENALINA = new Texture("imagenes/objetos/objetosActivos/adrenalina.png");
     public static final Texture SANGUCHE = new Texture("imagenes/objetos/objetosActivos/sanguche.png");
+    public static final Texture ANILLO_UNICO = new Texture("imagenes/objetos/objetosActivos/anillo_unico.png");
     
     //PROYECTILES
     public static final Texture PROYECTIL_PISTOLA = new Texture("imagenes/objetos/armaProyectil/bala_pequeña.png");

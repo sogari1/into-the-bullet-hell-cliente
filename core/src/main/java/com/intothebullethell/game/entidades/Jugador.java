@@ -14,6 +14,7 @@ import com.intothebullethell.game.globales.NetworkData;
 import com.intothebullethell.game.inputs.InputManager;
 import com.intothebullethell.game.objects.activos.Activo;
 import com.intothebullethell.game.objects.activos.Adrenalina;
+import com.intothebullethell.game.objects.activos.AnilloUnico;
 import com.intothebullethell.game.objects.activos.Sanguche;
 import com.intothebullethell.game.objects.armas.AWP;
 import com.intothebullethell.game.objects.armas.Arma;
@@ -200,6 +201,9 @@ public class Jugador extends Entidad {
 			break;
 		case "Sanguche":
 			activo =  new Sanguche();
+			break;
+		case "Anillo Unico":
+			activo =  new AnilloUnico();
 			break;
 		}
 		return activo;
