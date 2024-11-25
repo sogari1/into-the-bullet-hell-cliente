@@ -8,5 +8,5 @@ public class AssetRuta {
 	public static final String FUENTE = "fuentes/dogica.ttf";
 	
 	//MAPA
-	public static final String MAPA = "mapas/mapa.tmx";
+	public static final String MAPA = "mapas/mapa_itbh.tmx";
 }

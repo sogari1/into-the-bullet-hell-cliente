@@ -9,31 +9,32 @@ public interface NetworkActionsListener {
 	
 	//jugador
 	void actualizarJugadorPosicion(int jugadorId, float x, float y);
-	void actualizarDireccionJugador(int jugadorId, String region);
+	void actualizarDireccionJugador(int jugadorId, String region, boolean moviendose);
 	void actualizarVidaJugador(int jugadorId, int vidaMaxima, int vidaActual);
 	void actualizarArmaJugador(int jugadorId, String nombreArma);
-	void actualizarBalasArmaJugador(int jugadorId, int balasEnReserva, int balasEnMunicion);
 	void actualizarActivoJugador(int jugadorId, String nombreActivo);
-	void actualizarCantidadBengalas(int jugadorId, int cantidad);
-	void activoUsadoJugador(int jugadorId, boolean usado);
+	void actualizarOpacidadJugador(int jugadorId, float opacidad);
 	void jugadorMuerto(int jugadorId);
 	
 	//enemigo
-	void añadirEnemigo(String tipoEnemigo, float x, float y);
+	void añadirEnemigo(String tipoEnemigo);
 	void moverEnemigo(int enemigoId, float x, float y);
 	void removerEnemigo(int enemigoId);
 	
 	//proyectil
-	void añadirProyectil(String tipoProyectil, float x, float y, float velocidad, int daño, boolean disparadoPorJugador);
+	void añadirProyectil(String tipoProyectil);
 	void actualizarProyectilPosicion(int proyectilId, float x, float y);
 	void removerProyectil(int proyectilId);
 	
-	//objetos
-	void añadirObjeto(String tipoObjeto, float x, float y);
-	void removerObjeto(int objetoId);
+	//objetos agarrables
+	void añadirAgarrable(String tipoAgarrable, float x, float y);
+	void removerAgarrable(int agarrableId);
 	
 	//hud
 	void actualizarTiempo(int tiempo);
 	void actualizarRonda(int ronda);
 	void actualizarEnemigosRestantes(int cantidad);
+	void actualizarCantidadBengalas(int jugadorId, int cantidad);
+	void actualizarBalasArmaJugador(int jugadorId, int balasEnReserva, int balasEnMunicion);
+	void activoUsadoJugador(int jugadorId, boolean usado);
 }

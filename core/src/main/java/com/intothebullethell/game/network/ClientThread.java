@@ -99,10 +99,10 @@ public class ClientThread extends Thread {
 	private void manejarObjetos(String[] parts) {
 		switch(parts[1]) {
 		case "crear": 
-			GameData.networkListener.añadirObjeto(parts[2], Float.parseFloat(parts[3]), Float.parseFloat(parts[4]));
+			GameData.networkListener.añadirAgarrable(parts[2], Float.parseFloat(parts[3]), Float.parseFloat(parts[4]));
 			break;
 		case "remover":
-			GameData.networkListener.removerObjeto(Integer.parseInt(parts[2]));
+			GameData.networkListener.removerAgarrable(Integer.parseInt(parts[2]));
 			break;
 		}
 	}
@@ -113,7 +113,7 @@ public class ClientThread extends Thread {
 			GameData.networkListener.actualizarJugadorPosicion(Integer.parseInt(parts[2]), Float.parseFloat(parts[3]), Float.parseFloat(parts[4]));
 			break;
 		case "direccion":
-			GameData.networkListener.actualizarDireccionJugador(Integer.parseInt(parts[2]), parts[3]);
+			GameData.networkListener.actualizarDireccionJugador(Integer.parseInt(parts[2]), parts[3], Boolean.parseBoolean(parts[4]));
 			break;
 		case "vida":
 			GameData.networkListener.actualizarVidaJugador(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]));
@@ -136,6 +136,9 @@ public class ClientThread extends Thread {
 		case "bengala":
 			GameData.networkListener.actualizarCantidadBengalas(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
 			break;
+		case "opacidad":
+			GameData.networkListener.actualizarOpacidadJugador(Integer.parseInt(parts[2]), Float.parseFloat(parts[3]));
+			break;
 		}
     }
 
@@ -145,7 +148,7 @@ public class ClientThread extends Thread {
         	GameData.networkListener.moverEnemigo(Integer.parseInt(parts[2]), Float.parseFloat(parts[3]), Float.parseFloat(parts[4]));
             break;
         case "crear":
-        	GameData.networkListener.añadirEnemigo(parts[2], Float.parseFloat(parts[3]), Float.parseFloat(parts[4]));
+        	GameData.networkListener.añadirEnemigo(parts[2]);
         	break;
         case "remover":
         	GameData.networkListener.removerEnemigo(Integer.parseInt(parts[2]));
@@ -161,7 +164,7 @@ public class ClientThread extends Thread {
     		GameData.networkListener.actualizarProyectilPosicion(Integer.parseInt(parts[2]), Float.parseFloat(parts[3]), Float.parseFloat(parts[4]));
     		break;
     	case "crear":
-    		GameData.networkListener.añadirProyectil(parts[2], Float.parseFloat(parts[3]), Float.parseFloat(parts[4]), Float.parseFloat(parts[5]), Integer.parseInt(parts[6]), Boolean.parseBoolean(parts[7]));
+    		GameData.networkListener.añadirProyectil(parts[2]);
     		break;
     	case "remover":
     		GameData.networkListener.removerProyectil(Integer.parseInt(parts[2]));
@@ -233,6 +236,7 @@ public class ClientThread extends Thread {
     }
 
     public void end(){
+    	enviarMensajeAlServidor("desconectar!" + GameData.clienteNumero);
     	synchronized (lock) {
             end = true;
             conectado = true; 

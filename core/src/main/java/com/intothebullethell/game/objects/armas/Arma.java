@@ -9,7 +9,7 @@ public abstract class Arma {
     protected float proyectilVelocidad;
     protected int daño;
     protected float ratioFuego;
-    protected Texture proyectilTextura;
+    protected Texture proyectilTexturaUno, proyectilTexturaDos;
     protected Texture armaTextura;
     protected int capacidadMunicion;
     protected int balasEnReserva;
@@ -17,7 +17,7 @@ public abstract class Arma {
     private EfectoSonido efectosSonido;
     
 
-    public Arma(String nombre, float proyectilVelocidad, int daño, float ratioFuego, int capacidadMunicion, int balasEnReserva, Texture proyectilTextura, Texture armaTextura, EfectoSonido efectosSonido) {
+    public Arma(String nombre, float proyectilVelocidad, int daño, float ratioFuego, int capacidadMunicion, int balasEnReserva,Texture proyectilTexturaUno,Texture proyectilTexturaDos, Texture armaTextura, EfectoSonido efectosSonido) {
         this.nombre = nombre;
         this.proyectilVelocidad = proyectilVelocidad;
         this.daño = daño;
@@ -25,7 +25,8 @@ public abstract class Arma {
         this.capacidadMunicion = capacidadMunicion;
         this.balasEnReserva = balasEnReserva;
         this.balasEnMunicion = capacidadMunicion; 
-        this.proyectilTextura = proyectilTextura;
+        this.proyectilTexturaUno = proyectilTexturaUno;
+        this.proyectilTexturaDos = proyectilTexturaDos;
         this.armaTextura = armaTextura;
         this.efectosSonido = efectosSonido;
     }
@@ -42,14 +43,13 @@ public abstract class Arma {
         return nombre;
     }
 
-    public Texture getProyectilTextura() {
-        return proyectilTextura;
+    public Texture getProyectilTexturaUno() {
+        return proyectilTexturaUno;
     }
 
     public float getRatioFuego() {
 		return ratioFuego;
 	}
-
 	public Texture getArmaTextura() {
         return armaTextura;
     }

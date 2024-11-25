@@ -6,6 +6,7 @@ import com.intothebullethell.game.globales.SonidoRuta;
 
 public class Pistola extends Arma {
     public Pistola() {
-        super("Pistola", 75, 1, 0.4f, 10, 300, RecursoRuta.PROYECTIL_PISTOLA, RecursoRuta.ARMA_PISTOLA, SonidoRuta.DISPARIO_PISTOLA);
+        super("Pistola", 300, 1, 0.3f, 10, 120, RecursoRuta.PROYECTIL_PISTOLA, RecursoRuta.PROYECTIL_PISTOLA, RecursoRuta.ARMA_PISTOLA, SonidoRuta.DISPARO_PISTOLA);
     }
+    
 }

@@ -5,7 +5,7 @@ import com.intothebullethell.game.globales.RecursoRuta;
 
 public class EnemigoRapido extends Enemigo {
     public EnemigoRapido() {
-        super(RecursoRuta.ENEMIGO, 20, 15, 10f, 1, 100, RecursoRuta.PROYECTIL_ENEMIGO);
+        super(RecursoRuta.SPRITE_MEDUSA_1, RecursoRuta.SPRITE_MEDUSA_2, 20, 15);
     }
     @Override
     public void atacar() {

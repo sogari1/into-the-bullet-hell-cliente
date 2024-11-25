@@ -1,4 +1,4 @@
-package com.intothebullethell.game.objects.objetos;
+package com.intothebullethell.game.objects.agarrables;
 
 import com.intothebullethell.game.entidades.Jugador;
 import com.intothebullethell.game.globales.RecursoRuta;
@@ -11,9 +11,6 @@ public class CajaMunicion extends Agarrable {
 	}
     @Override
     public void aplicarEfecto(Jugador jugador) {
-        jugador.getArmaEquipada().aumentarBalasEnReserva(30);
-        efectoSonido.reproducirSonido();
-        this.recogido = true; 
         
     }
 	@Override

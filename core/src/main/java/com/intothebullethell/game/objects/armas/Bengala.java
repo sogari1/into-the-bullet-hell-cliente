@@ -11,7 +11,6 @@ public class Bengala {
 	
     private int usosMaximos = 2;
     private int usosRestantes = usosMaximos;
-
     public int getUsosRestantes() {
         return usosRestantes;
     }

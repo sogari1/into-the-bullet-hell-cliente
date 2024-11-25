@@ -73,8 +73,8 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
 	}
     private void crearJugadores() {
     	for (int i = 0; i < NUM_JUGADORES; i++) {
-			jugadores[i] = new Jugador(i, RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_ARRIBA,  RecursoRuta.SPRITE_ABAJO, RecursoRuta.SPRITE_IZQUIERDA,  RecursoRuta.SPRITE_DERECHA, camara, inputManager);
-			jugadores[i].setPosition((15 + (i*2)) * tileCollisionManager.collisionLayer.getTileWidth(), 15 * tileCollisionManager.collisionLayer.getTileHeight());
+			jugadores[i] = new Jugador(i, RecursoRuta.SPRITE_ABAJO_1, camara, inputManager);
+			jugadores[i].setPosition((20 + (i*2)) * tileCollisionManager.collisionLayer.getTileWidth(), 50 * tileCollisionManager.collisionLayer.getTileHeight());
 		}
     }
     
@@ -202,10 +202,11 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
         if (inputManager.isUsoBengalaPressed()) {
         	clientThread.enviarMensajeAlServidor("bengala!" + GameData.clienteNumero);
         } 	
+        // activo
         if(inputManager.isUsoActivoPressed()) {
         	clientThread.enviarMensajeAlServidor("activo!" + GameData.clienteNumero);
         }
-        //disparos
+        // disparar
         if (inputManager.isDisparar()) {
         	Vector3 jugadorMousePosicion = camara.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         	clientThread.enviarMensajeAlServidor("disparo!disparar!" + GameData.clienteNumero + "!" + (int) jugadorMousePosicion.x + "!" + (int) jugadorMousePosicion.y);
@@ -224,7 +225,6 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
 	}
 	@Override
 	public void dispose() {
-		clientThread.enviarMensajeAlServidor("desconectar!" + GameData.clienteNumero);
 		clientThread.end();
 	}
 	private void setCustomCursor(String cursorPath) {
@@ -262,14 +262,15 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
 		this.jugadores[jugadorId].setPosition(x, y);
 	}
 	@Override
-	public void actualizarDireccionJugador(int jugadorId, String region) {
-	    this.jugadores[jugadorId].setRegion(this.jugadores[jugadorId].obtenerRegionDesdeNombre(region));;
+	public void actualizarDireccionJugador(int jugadorId, String region, boolean moviendose) {
+		this.jugadores[jugadorId].setMoviendose(moviendose);
+	    this.jugadores[jugadorId].getAnimacionJugador().actualizarAnimacionJugador(this.jugadores[jugadorId], region, moviendose);
 	}
 	@Override
 	public void jugadorMuerto(int jugadorId) {
 		if (jugadorId == GameData.clienteNumero) { 
-		 this.jugadores[jugadorId].morir();
-		 juegoEstado = JuegoEstado.MUERTO;
+			this.jugadores[jugadorId].morir();
+			juegoEstado = JuegoEstado.MUERTO;
 		}
 	}
 	@Override
@@ -281,12 +282,12 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
 		entidadManager.removerEnemigo(enemigoId);
 	}
 	@Override
-	public void añadirEnemigo(String tipoEnemigo, float x, float y) {
-		entidadManager.añadirEnemigo(tipoEnemigo, x, y);
+	public void añadirEnemigo(String tipoEnemigo) {
+		entidadManager.añadirEnemigo(tipoEnemigo);
 	}
 	@Override
-	public void añadirProyectil(String tipoProyectil, float x, float y, float velocidad, int daño, boolean disparadoPorJugador ) {
-		entidadManager.añadirProyectil(tipoProyectil, x, y, velocidad, daño, disparadoPorJugador);
+	public void añadirProyectil(String tipoProyectil) {
+		entidadManager.añadirProyectil(tipoProyectil);
 	}
 	public void actualizarProyectilPosicion(int projectileId, float x, float y) {
 		entidadManager.moverProyectil(projectileId, x, y);
@@ -296,12 +297,12 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
 		entidadManager.removerProyectil(proyectilId);
 	}
 	@Override
-	public void añadirObjeto(String tipoObjeto, float x, float y) {
-		entidadManager.añadirObjeto(tipoObjeto, x, y);
+	public void añadirAgarrable(String tipoAgarrable, float x, float y) {
+		entidadManager.añadirAgarrable(tipoAgarrable, x, y);
 	}
 	@Override
-	public void removerObjeto(int objetoId) {
-		entidadManager.removerObjeto(objetoId);
+	public void removerAgarrable(int agarrableId) {
+		entidadManager.removerAgarrable(agarrableId);
 	}
 	@Override
 	public void actualizarTiempo(int tiempo) {
@@ -314,6 +315,12 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
 	@Override
 	public void actualizarEnemigosRestantes(int cantidad) {
 		this.hud.actualizarEnemigosRestantes(cantidad);
+	}
+	public void actualizarActivoJugador(int jugadorId, String nombreActivo) {
+		this.jugadores[jugadorId].cambiarActivo(nombreActivo);
+		if (jugadorId == GameData.clienteNumero) {
+			this.hud.actualizarActivo(this.jugadores[jugadorId].getActivoEquipado());
+		}
 	}
 	@Override
 	public void activoUsadoJugador(int jugadorId, boolean usado) {
@@ -328,16 +335,10 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
 			this.hud.actualizarBengala(this.jugadores[jugadorId].getBengala());
 		}
 	}	
-	public void actualizarActivoJugador(int jugadorId, String nombreActivo) {
-		this.jugadores[jugadorId].cambiarActivo(nombreActivo);
-		if (jugadorId == GameData.clienteNumero) {
-			this.hud.actualizarActivo(this.jugadores[jugadorId].getActivoEquipado());
-		}
-	}
 	@Override
 	public void actualizarVidaJugador(int jugadorId, int vidaMaxima, int vidaActual) {
 		if (jugadorId == GameData.clienteNumero) {
-		this.hud.actualizarVida(vidaMaxima, vidaActual);
+			this.hud.actualizarVida(vidaMaxima, vidaActual);
 		}
 	}
 	@Override
@@ -351,6 +352,10 @@ public class MultiplayerPantalla implements Screen, NetworkActionsListener {
 	public void actualizarBalasArmaJugador(int jugadorId, int balasEnReserva, int balasEnMunicion) {
 		this.jugadores[jugadorId].getArmaEquipada().setBalasEnReserva(balasEnReserva);
 		this.jugadores[jugadorId].getArmaEquipada().setBalasEnMunicion(balasEnMunicion);
+	}
+	@Override
+	public void actualizarOpacidadJugador(int jugadorId, float opacidad) {
+		this.jugadores[jugadorId].setOpacidad(opacidad);
 	}
 
  }

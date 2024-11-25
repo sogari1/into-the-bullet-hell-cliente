@@ -12,7 +12,6 @@ public class EnemigoManager {
 	public void añadirEnemigo(Enemigo enemigo) {
 		enemigos.add(enemigo);
 	}
-	public void update(float delta) {}
 	
 	public void draw() {
 		for (Enemigo enemigo : enemigos) {
