@@ -28,6 +28,4 @@ public class SonidoRuta {
 	public static final EfectoSonido SANGUCHE = new EfectoSonido("sonidos/objetosActivos/sanguche.wav");
 	public static final EfectoSonido ANILLO_UNICO = new EfectoSonido("sonidos/objetosActivos/anillo_unico.wav");
 	
-	//OTROS
-	public static final EfectoSonido RANDOMIZADOR = new EfectoSonido("sonidos/otros/randomizer.wav");
 }
